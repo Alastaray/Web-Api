@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Net.Http.Json;
@@ -22,38 +23,10 @@ namespace Project
     {
         static void Main(string[] args)
         {
-            HttpListener listener = new HttpListener();
-            string host = "http://localhost:8888/";
-            listener.Prefixes.Add(host);
-            listener.Start();
+            const string host = "http://localhost:8888/";
+            Server server = new Server(host);
             Console.WriteLine("Waiting for connection!");
-            while (true)
-            {
-                HttpListenerContext context = listener.GetContext();
-                HttpListenerRequest request = context.Request;
-                HttpListenerResponse response = context.Response;
-                Picture picture = new Picture();
-                JsonContent json;
-                try
-                {
-                    picture.DownloudPicture(request);
-                    json = JsonContent.Create(new Link(host+picture.Path));
-                }
-                catch (PictureExpection er)
-                {
-                    response.StatusCode = er.StatusCode;
-                    json = JsonContent.Create(new ErrorMessage(er.Message));
-                }
-                catch (Exception er)
-                {
-                    response.StatusCode = 400;
-                    json = JsonContent.Create(new ErrorMessage(er.Message));
-                }                     
-                Stream output = response.OutputStream;
-                json.CopyToAsync(output);
-                output.Close();
-            }
-            listener.Stop();
+            server.Start();
         }
     }
 }
