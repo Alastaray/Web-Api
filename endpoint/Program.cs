@@ -1,48 +1,29 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Http.Json;
 
 namespace Project
 {
-
-    public class Error
+    public class ErrorMessage
     {
-        public Error(string what)
-        {
-            error = what;
-        }
-        public string error { get; }
+        public ErrorMessage(string message) { Error = message; }
+        public string Error { get; set; }
     }
+    public class Link
+    {
+        public Link(string url) { Url = url; }
+        public string Url { get; set; }
+    }
+
 
 
     class Program
     {
         static void Main(string[] args)
         {
-            HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:8888/");
-            listener.Start();
-            while (true)
-            {
-                HttpListenerContext context = listener.GetContext();
-                HttpListenerResponse response = context.Response;
-                Picture picture = new Picture();
-                JsonContent json;
-                if (picture.SetUrl(context.Request))
-                {
-                    json = JsonContent.Create(picture);
-                }
-                else
-                {
-                    response.StatusCode = 400;
-                    json = JsonContent.Create(new Error("Incorrect url!"));
-                }            
-                Stream output = response.OutputStream;
-                json.CopyToAsync(output);
-                output.Close();
-            }
-            listener.Stop();
+            const string host = "http://localhost:8888/";
+            Server server = new Server(host);
+            Console.WriteLine("Waiting for connection!");
+            server.Start();
+            
         }
     }
 }
