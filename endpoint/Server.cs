@@ -52,7 +52,7 @@ namespace Project
                 {
                     context.Response.StatusCode = er.StatusCode;
                     json = JsonContent.Create(new ErrorMessage(er.Message));
-                }             
+                }
                 Stream output = context.Response.OutputStream;
                 json.CopyToAsync(output);
                 output.Close();
@@ -70,7 +70,7 @@ namespace Project
                 case "get-new-url":
                     return DownloadPicture(context);
                 case "remove":
-                    return DownloadPicture(context);
+                    return RemovePicture(context);
                 default:
                     return null;
             }
@@ -103,21 +103,31 @@ namespace Project
             return command.ExecuteNonQuery();
         }
 
-        public int ExecuteDeleteFromDB(int id)
+        public int ExecuteDeleteFromDB(string id)
         {
             const string sql_comm = "DELETE from [Pictures] where (id) = ";
             SqlCommand command = new SqlCommand(sql_comm + id, sqlConn);
             return command.ExecuteNonQuery();
         }
 
-        public string ExecuteSelectFromDB(int id, bool _new)
+        public string ExecuteSelectFromDB(string id, bool _new)
         {
-            const string sql_comm = "SELECT * from [Pictures] where (id) = ";
-            SqlCommand command = new SqlCommand(sql_comm + id, sqlConn);
-            SqlDataReader sqlDataReader = command.ExecuteReader();
-            sqlDataReader.Read();
-            if (_new) return sqlDataReader["path"].ToString();
-            else return sqlDataReader["new_path"].ToString();
+            try
+            {
+                string path;
+                const string sql_comm = "SELECT * from [Pictures] where (id) = ";
+                SqlCommand command = new SqlCommand(sql_comm + id, sqlConn);
+                SqlDataReader sqlDataReader = command.ExecuteReader();
+                sqlDataReader.Read();
+                if (_new) path = sqlDataReader["path"].ToString();
+                else path = sqlDataReader["new_path"].ToString();
+                sqlDataReader.Close();
+                return path;
+            }
+            catch (Exception)
+            {
+                throw new ServerExpection("Record with this id doesnot exist!", 409);
+            }           
         }
 
         public JsonContent DownloadPicture(HttpListenerContext context)
@@ -155,36 +165,57 @@ namespace Project
             }
         }
 
-        public bool IsUrl(HttpListenerRequest request, ref string url)
+        public string IsKey(HttpListenerRequest request, string key)
         {
             if (request.QueryString.Count != 0)
             {
-                foreach (string key in request.QueryString.Keys)
+                foreach (string item in request.QueryString.Keys)
                 {
-                    if (key.Equals("url"))
+                    if (item.Equals(key))
                     {
-                        url = request.QueryString.Get(key);
-                        return true;
+                        return request.QueryString.Get(item);
                     }
                 }
             }
-            return false;
+            return null;
         }
 
         public string CheckUrl(HttpListenerRequest request)
         {
-            string url = String.Empty;
-            if (!IsUrl(request, ref url))
-                throw new ServerExpection("Incorrect url!", 422);
+            string url = IsKey(request, "url");
+            if (url == null)
+                throw new ServerExpection("Url is empty!", 422);
             if (GetPictureSize(url) > 5)
                 throw new ServerExpection("Picture has size than more 5MB!", 400);
             return url;
         }
 
-        /*public JsonContent DeletePicture(HttpListenerContext context)
+        public JsonContent RemovePicture(HttpListenerContext context)
         {
-            //File.Delete(String);
-        }*/
+            string id = IsKey(context.Request, "id");
+            if (id == null)
+                throw new ServerExpection("Id is empty!", 422);
+            try
+            {
+                string new_path = ExecuteSelectFromDB(id, true),
+                       path = ExecuteSelectFromDB(id, false);
+                File.Delete(new_path);
+                File.Delete(path);
+                return JsonContent.Create(new Message("Successfully deleting!"));
+            }
+            catch (ServerExpection er)
+            {
+                context.Response.StatusCode = er.StatusCode;
+                return JsonContent.Create(new ErrorMessage(er.Message));
+            }
+            catch (Exception er)
+            {
+                context.Response.StatusCode = 400;
+                return JsonContent.Create(new ErrorMessage(er.Message));
+            }
+            
+        }
+
         /* public JsonContent GetPathPicture(HttpListenerContext context)
          {
 
