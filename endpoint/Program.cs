@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Data.SqlClient;
-using System.IO;
-using System.Net;
-using System.Net.Http.Json;
 
 namespace Project
 {
@@ -27,6 +23,7 @@ namespace Project
             Server server = new Server(host);
             Console.WriteLine("Waiting for connection!");
             server.Start();
+            
         }
     }
 }

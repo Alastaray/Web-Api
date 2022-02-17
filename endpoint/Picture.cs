@@ -86,21 +86,32 @@ namespace Project
             }
         }
 
+        public Size GetNewPictureSize(Size size)
+        {
+            int width = size.Width,
+               height = size.Height,
+               width_modifier = width / 100,
+               height_modifier = height / 100,
+               modifier = width_modifier.Equals(height_modifier) ? width_modifier : height_modifier;
+            return new Size(width / modifier, height / modifier);
+        }
+
         public void Cut()
         {
-            const int param = 300;
             using (Bitmap bitmap = new Bitmap(Path))
             {
-                Size size = new Size(param, param);
+                Size size = GetNewPictureSize(bitmap.Size);
                 using (Bitmap newBitmap = new Bitmap(bitmap, size))
                 {
                     try
                     {
-                        newBitmap.Save("Images\\new" + Name);
+                        NewPath = Directory.GetCurrentDirectory() + "\\Images\\new_" + Name;
+                        newBitmap.Save(NewPath);
                     }
                     catch (Exception)
                     {
-                        newBitmap.Save("new" + Name);
+                        NewPath = Directory.GetCurrentDirectory() + "\\new_" + Name;
+                        newBitmap.Save(NewPath);
                     }
                     
                 }

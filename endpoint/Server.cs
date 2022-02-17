@@ -49,7 +49,7 @@ namespace Project
             try
             {
                 picture.Downloud(context.Request);
-                return JsonContent.Create(new Link(Host + picture.Path));
+                return JsonContent.Create(new Link(Host + picture.NewPath));
             }
             catch (PictureExpection er)
             {
