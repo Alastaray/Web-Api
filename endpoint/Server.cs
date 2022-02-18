@@ -18,23 +18,22 @@ namespace Project
     class Server
     {
         public string Host { get;}
-        private HttpListener listener = null;
-        SqlConnection sqlConn = null;       
+        private HttpListener listener;          
         private const string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Администратор\\source\\repos\\endpoint\\endpoint\\DB.mdf;Integrated Security=True";
+        Database db;
 
         public Server(string host)
         {
             Host = host;
             listener = new HttpListener();
-            sqlConn = new SqlConnection(connStr);         
+            db = new Database(connStr);
             listener.Prefixes.Add(Host);
-            listener.Start();
-            sqlConn.Open();
+            listener.Start();            
         }
+
         ~Server()
         {
-            listener.Stop();
-            sqlConn.Close();
+            listener.Stop();            
         }
 
         public void Start()
@@ -45,7 +44,8 @@ namespace Project
                 JsonContent json;
                 try
                 {
-                    json = ExecuteRequest(context);
+                    ServerCommand command = new ServerCommand(db, context);
+                    json = ExecuteRequest(command);
                     if (json == null) break;
                 }
                 catch (ServerExpection er)
@@ -59,18 +59,18 @@ namespace Project
             }            
         }
 
-        public JsonContent ExecuteRequest(HttpListenerContext context)
+        public JsonContent ExecuteRequest(ServerCommand command)
         {
-            switch (CheckRequest(context.Request))
+            switch (CheckRequest(command.GetHttpListenerContext().Request))
             {
                 case "upload-by-url":
-                    return DownloadPicture(context);
+                    return command.DownloadPicture(Host);
                 case "get-url":
-                    return DownloadPicture(context);
+                    return command.GetPathPicture(Host, false);
                 case "get-new-url":
-                    return DownloadPicture(context);
+                    return command.GetPathPicture(Host, true);
                 case "remove":
-                    return RemovePicture(context);
+                    return command.RemovePicture();
                 default:
                     return null;
             }
@@ -91,138 +91,9 @@ namespace Project
                         if (str_request[2].Equals(item)) return item;
                     }
                 }
-            }               
+            }
             throw new ServerExpection("Incorrect request!", 400);
         }
-
-        public int ExecuteInsertIntoDB(string path, string new_path)
-        {
-            const string sql_insert = "INSERT INTO [Pictures] (path, new_path) values ";
-            string sql_comm = sql_insert + "(N'" + path + "'," + "N'" + new_path + "')";
-            SqlCommand command = new SqlCommand(sql_comm, sqlConn);
-            return command.ExecuteNonQuery();
-        }
-
-        public int ExecuteDeleteFromDB(string id)
-        {
-            const string sql_comm = "DELETE from [Pictures] where (id) = ";
-            SqlCommand command = new SqlCommand(sql_comm + id, sqlConn);
-            return command.ExecuteNonQuery();
-        }
-
-        public string ExecuteSelectFromDB(string id, bool _new)
-        {
-            try
-            {
-                string path;
-                const string sql_comm = "SELECT * from [Pictures] where (id) = ";
-                SqlCommand command = new SqlCommand(sql_comm + id, sqlConn);
-                SqlDataReader sqlDataReader = command.ExecuteReader();
-                sqlDataReader.Read();
-                if (_new) path = sqlDataReader["path"].ToString();
-                else path = sqlDataReader["new_path"].ToString();
-                sqlDataReader.Close();
-                return path;
-            }
-            catch (Exception)
-            {
-                throw new ServerExpection("Record with this id doesnot exist!", 409);
-            }           
-        }
-
-        public JsonContent DownloadPicture(HttpListenerContext context)
-        {           
-            try
-            {
-                string url = CheckUrl(context.Request);
-                Picture picture = new Picture();
-                picture.Download(url);
-                picture.Cut();
-                if (ExecuteInsertIntoDB(picture.Path, picture.NewPath) != 1) 
-                        throw new ServerExpection("Bad request to database!", 409);
-                return JsonContent.Create(new Link(Host + picture.NewPath));
-            }
-            catch (ServerExpection er)
-            {
-                context.Response.StatusCode = er.StatusCode;
-                return JsonContent.Create(new ErrorMessage(er.Message));
-            }
-            catch (Exception er)
-            {
-                context.Response.StatusCode = 400;
-                return JsonContent.Create(new ErrorMessage(er.Message));
-            }
-        }
-
-        public double GetPictureSize(string Url)
-        {
-            var webRequest = HttpWebRequest.Create(Url);
-            webRequest.Method = "HEAD";
-            using (var webResponse = webRequest.GetResponse())
-            {
-                var fileSize = webResponse.Headers.Get("Content-Length");
-                return Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
-            }
-        }
-
-        public string IsKey(HttpListenerRequest request, string key)
-        {
-            if (request.QueryString.Count != 0)
-            {
-                foreach (string item in request.QueryString.Keys)
-                {
-                    if (item.Equals(key))
-                    {
-                        return request.QueryString.Get(item);
-                    }
-                }
-            }
-            return null;
-        }
-
-        public string CheckUrl(HttpListenerRequest request)
-        {
-            string url = IsKey(request, "url");
-            if (url == null)
-                throw new ServerExpection("Url is empty!", 422);
-            if (GetPictureSize(url) > 5)
-                throw new ServerExpection("Picture has size than more 5MB!", 400);
-            return url;
-        }
-
-        public JsonContent RemovePicture(HttpListenerContext context)
-        {
-            string id = IsKey(context.Request, "id");
-            if (id == null)
-                throw new ServerExpection("Id is empty!", 422);
-            try
-            {
-                string new_path = ExecuteSelectFromDB(id, true),
-                       path = ExecuteSelectFromDB(id, false);
-                File.Delete(new_path);
-                File.Delete(path);
-                return JsonContent.Create(new Message("Successfully deleting!"));
-            }
-            catch (ServerExpection er)
-            {
-                context.Response.StatusCode = er.StatusCode;
-                return JsonContent.Create(new ErrorMessage(er.Message));
-            }
-            catch (Exception er)
-            {
-                context.Response.StatusCode = 400;
-                return JsonContent.Create(new ErrorMessage(er.Message));
-            }
-            
-        }
-
-        /* public JsonContent GetPathPicture(HttpListenerContext context)
-         {
-
-         }
-         public JsonContent GetNewPathPicture(HttpListenerContext context)
-         {
-
-         }*/
+        
     }
 }

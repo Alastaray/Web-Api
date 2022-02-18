@@ -7,13 +7,13 @@ using System.Net;
 
 namespace Project
 {
-    public class Picture
+    public class Image
     {
         public string Path { get; private set; }
         public string NewPath { get; private set; }
         public string Name { get; private set; }
 
-        public void Download(string url)
+        public bool Download(string url)
         {
             WebClient client = new WebClient();
             string[] names = url.Split(new char[] { '/' });
@@ -21,12 +21,22 @@ namespace Project
             try
             {
                 Path = Directory.GetCurrentDirectory() + "\\Images\\" + Name;
-                client.DownloadFile(url, Path);
+                if (!File.Exists(Path))
+                {
+                    client.DownloadFile(url, Path);
+                    return true;
+                }
+                else return false;
             }
             catch (WebException)
             {
                 Path = Directory.GetCurrentDirectory() + "\\" + Name;
-                client.DownloadFile(url, Path);
+                if (!File.Exists(Path))
+                {
+                    client.DownloadFile(url, Path);
+                    return true;
+                }
+                else return false;
             }
         }
 
