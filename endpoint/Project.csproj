@@ -10,4 +10,10 @@
     <PackageReference Include="System.ServiceModel.Http" Version="4.9.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DB.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
