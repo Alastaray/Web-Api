@@ -2,6 +2,11 @@
 
 namespace Project
 {
+    public class Message
+    {
+        public Message(string _message) { message = _message; }
+        public string message { get; set; }
+    }
     public class ErrorMessage
     {
         public ErrorMessage(string message) { Error = message; }

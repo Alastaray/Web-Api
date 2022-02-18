@@ -6,29 +6,35 @@ using System.Net.Http.Json;
 
 namespace Project
 {
+    public class ServerExpection : System.Exception
+    {
+        public ServerExpection(string message, int status_code) : base(message)
+        {
+            StatusCode = status_code;
+        }
+        public int StatusCode { get; set; }
+    }
+
     class Server
     {
         public string Host { get;}
-        private HttpListener listener = null;
-        SqlConnection sqlConn = null;
-        private const string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Администратор\\source\\repos\\endpoint\\endpoint\\DB.mdf;Integrated Security=True";
-        private const string requestSelect = "SELECT * from [Pictures] where (id) = 3";
-        private const string requestInsert = "INSERT INTO [Pictures] (path, new_path) values ('ytryrt', 'ytryrt')";
-        private const string requestDelete = "DELETE from [Pictures] where (id) = 3";
+        private HttpListener listener;
+        private string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=";
+        Database db;
 
         public Server(string host)
         {
             Host = host;
+            connStr += Directory.GetCurrentDirectory() + "\\DB.mdf; Integrated Security = True";
             listener = new HttpListener();
-            sqlConn = new SqlConnection(connStr);
+            db = new Database(connStr);
             listener.Prefixes.Add(Host);
-            listener.Start();
-            sqlConn.Open();
+            listener.Start();            
         }
+
         ~Server()
         {
-            listener.Stop();
-            sqlConn.Close();
+            listener.Stop();            
         }
 
         public void Start()
@@ -36,31 +42,59 @@ namespace Project
             while (true)
             {
                 HttpListenerContext context = listener.GetContext();
-                JsonContent json = RequestDownload(context);
-                
+                JsonContent json;
+                try
+                {
+                    ServerCommand command = new ServerCommand(db, context);
+                    json = ExecuteRequest(command);
+                    if (json == null) break;
+                }
+                catch (ServerExpection er)
+                {
+                    context.Response.StatusCode = er.StatusCode;
+                    json = JsonContent.Create(new ErrorMessage(er.Message));
+                }
                 Stream output = context.Response.OutputStream;
                 json.CopyToAsync(output);
                 output.Close();
             }            
         }
-        public JsonContent RequestDownload(HttpListenerContext context)
+
+        public JsonContent ExecuteRequest(ServerCommand command)
         {
-            Picture picture = new Picture();
-            try
+            switch (CheckRequest(command.GetHttpListenerContext().Request))
             {
-                picture.Downloud(context.Request);
-                return JsonContent.Create(new Link(Host + picture.NewPath));
-            }
-            catch (PictureExpection er)
-            {
-                context.Response.StatusCode = er.StatusCode;
-                return JsonContent.Create(new ErrorMessage(er.Message));
-            }
-            catch (Exception er)
-            {
-                context.Response.StatusCode = 400;
-                return JsonContent.Create(new ErrorMessage(er.Message));
+                case "upload-by-url":
+                    return command.DownloadPicture(Host);
+                case "get-url":
+                    return command.GetPathPicture(Host, false);
+                case "get-new-url":
+                    return command.GetPathPicture(Host, true);
+                case "remove":
+                    return command.RemovePicture();
+                default:
+                    return null;
             }
         }
+
+        public string CheckRequest(HttpListenerRequest request)
+        {
+            string[] str_request = request.RawUrl.Replace('?', '/').Split("/");
+            string end = "end";
+            string[] possible_requests = { "upload-by-url", "get-url", "get-new-url", "remove" };
+            if (str_request.Length != 0)
+            {               
+                if (str_request[1].Equals("api"))
+                {
+                    if (str_request[2].Equals(end)) return end;
+                    foreach (var item in possible_requests)
+                    {
+                        if (str_request[2].Equals(item)) return item;
+                    }
+                }
+            }
+            throw new ServerExpection("Incorrect request!", 400);
+        }
+        
     }
 }
