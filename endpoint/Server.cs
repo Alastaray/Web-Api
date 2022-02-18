@@ -18,13 +18,14 @@ namespace Project
     class Server
     {
         public string Host { get;}
-        private HttpListener listener;          
-        private const string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Администратор\\source\\repos\\endpoint\\endpoint\\DB.mdf;Integrated Security=True";
+        private HttpListener listener;
+        private string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=";
         Database db;
 
         public Server(string host)
         {
             Host = host;
+            connStr += Directory.GetCurrentDirectory() + "\\DB.mdf; Integrated Security = True";
             listener = new HttpListener();
             db = new Database(connStr);
             listener.Prefixes.Add(Host);
