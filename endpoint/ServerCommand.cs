@@ -25,8 +25,9 @@ namespace Project
                 string url = CheckUrl();
                 Image image = new Image();
                 if(!image.Download(url)) throw new ServerExpection("Image already exists!", 400);
-                image.Cut();
-                if (database.ExecuteInsertIntoDB(image.Path, image.NewPath) != 1)
+                image.Cut(100);
+                image.Cut(300);
+                if (database.ExecuteInsertIntoDB(image.Path, image.Name) != 1)
                     throw new ServerExpection("Bad request to database!", 409);
                 return JsonContent.Create(new Link(host + image.Path));
             }
@@ -49,8 +50,12 @@ namespace Project
                 throw new ServerExpection("Id is empty!", 422);
             try
             {
-                File.Delete(database.ExecuteSelectFromDB(id, true));
-                File.Delete(database.ExecuteSelectFromDB(id, false));
+                string path = database.ExecuteSelectFromDB(id),
+                    name = database.ExecuteSelectFromDB(id,true);
+                File.Delete(path + name);
+                File.Delete(path + "new_100_" + name);
+                File.Delete(path + "new_300_" + name);
+                database.ExecuteDeleteFromDB(id);
                 return JsonContent.Create(new Message("Successfully deleting!"));
             }
             catch (ServerExpection er)
@@ -73,7 +78,7 @@ namespace Project
                 throw new ServerExpection("Id is empty!", 422);
             try
             {
-                string path = database.ExecuteSelectFromDB(id, _new);
+                string path = database.ExecuteSelectFromDB(id);
                 return JsonContent.Create(new Link(host+path));
             }
             catch (ServerExpection er)
