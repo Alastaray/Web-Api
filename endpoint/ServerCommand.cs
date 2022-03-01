@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Http;
 
 namespace Project
 {
@@ -29,7 +30,7 @@ namespace Project
                 image.Cut(300);
                 if (database.ExecuteInsertIntoDB(image.Path, image.Name) != 1)
                     throw new ServerExpection("Bad request to database!", 409);
-                return JsonContent.Create(new Link(host + image.Path));
+                return JsonContent.Create(new Link(host + image.Path + image.Name));
             }
             catch (ServerExpection er)
             {
@@ -71,7 +72,7 @@ namespace Project
 
         }
 
-        public JsonContent GetPathPicture(string host, bool _new)
+        public JsonContent GetPathPicture(string host)
         {
             string id = IsKey("id");
             if (id == null)
@@ -79,7 +80,8 @@ namespace Project
             try
             {
                 string path = database.ExecuteSelectFromDB(id);
-                return JsonContent.Create(new Link(host+path));
+                string name = database.ExecuteSelectFromDB(id, true);
+                return JsonContent.Create(new Link(host + path + name));
             }
             catch (ServerExpection er)
             {
@@ -95,12 +97,11 @@ namespace Project
 
         public double GetPictureSize(string Url)
         {
-            var webRequest = HttpWebRequest.Create(Url);
-            webRequest.Method = "HEAD";
-            using (var webResponse = webRequest.GetResponse())
+            HttpClient webRequest = new HttpClient();
+            using (var webResponse = webRequest.GetAsync(Url))
             {
-                var fileSize = webResponse.Headers.Get("Content-Length");
-                return Math.Round(Convert.ToDouble(fileSize) / 1024.0 / 1024.0, 2);
+                string[] fileSizeBytes = (string[])webResponse.Result.Content.Headers.GetValues("Content-Length");
+                return Math.Round(Convert.ToDouble(fileSizeBytes[0]) / 1024.0 / 1024.0, 2);
             }
         }
 

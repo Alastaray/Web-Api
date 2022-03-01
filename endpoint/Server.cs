@@ -67,9 +67,7 @@ namespace Project
                 case "upload-by-url":
                     return command.DownloadPicture(Host);
                 case "get-url":
-                    return command.GetPathPicture(Host, false);
-                case "get-new-url":
-                    return command.GetPathPicture(Host, true);
+                    return command.GetPathPicture(Host);
                 case "remove":
                     return command.RemovePicture();
                 default:
@@ -81,7 +79,7 @@ namespace Project
         {
             string[] str_request = request.RawUrl.Replace('?', '/').Split("/");
             string end = "end";
-            string[] possible_requests = { "upload-by-url", "get-url", "get-new-url", "remove" };
+            string[] possible_requests = { "upload-by-url", "get-url", "remove" };
             if (str_request.Length != 0)
             {               
                 if (str_request[1].Equals("api"))
