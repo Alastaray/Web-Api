@@ -8,6 +8,5 @@
 #### What request you can send:
 -	##### api/upload-by-url/:url
 -	##### api/get-url/:id
--	##### api/get-new-url/:id
 -	##### api/remove/:id
 -	##### api/end

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using Endpoint.Controllers;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http.Json;
+using Endpoint.Models;
 
-namespace Project
+namespace Endpoint
 {
-    public class ServerExpection : System.Exception
+    public class ServerExpection : Exception
     {
         public ServerExpection(string message, int status_code) : base(message)
         {
@@ -20,14 +21,14 @@ namespace Project
         public string Host { get;}
         private HttpListener listener;
         private string connStr = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=";
-        Database db;
+        DatabaseController db;
 
         public Server(string host)
         {
             Host = host;
             connStr += Directory.GetCurrentDirectory() + "\\DB.mdf; Integrated Security = True";
             listener = new HttpListener();
-            db = new Database(connStr);
+            db = new DatabaseController(connStr);
             listener.Prefixes.Add(Host);
             listener.Start();            
         }
@@ -45,9 +46,10 @@ namespace Project
                 JsonContent json;
                 try
                 {
-                    ServerCommand command = new ServerCommand(db, context);
-                    json = ExecuteRequest(command);
-                    if (json == null) break;
+
+                    ServerController serverController = ServerController.GetRequest(db, context);
+                    if (serverController == null) break;
+                    json = serverController.ExecuteRequest(Host);                   
                 }
                 catch (ServerExpection er)
                 {
@@ -58,43 +60,6 @@ namespace Project
                 json.CopyToAsync(output);
                 output.Close();
             }            
-        }
-
-        public JsonContent ExecuteRequest(ServerCommand command)
-        {
-            switch (CheckRequest(command.GetHttpListenerContext().Request))
-            {
-                case "upload-by-url":
-                    return command.DownloadPicture(Host);
-                case "get-url":
-                    return command.GetPathPicture(Host, false);
-                case "get-new-url":
-                    return command.GetPathPicture(Host, true);
-                case "remove":
-                    return command.RemovePicture();
-                default:
-                    return null;
-            }
-        }
-
-        public string CheckRequest(HttpListenerRequest request)
-        {
-            string[] str_request = request.RawUrl.Replace('?', '/').Split("/");
-            string end = "end";
-            string[] possible_requests = { "upload-by-url", "get-url", "get-new-url", "remove" };
-            if (str_request.Length != 0)
-            {               
-                if (str_request[1].Equals("api"))
-                {
-                    if (str_request[2].Equals(end)) return end;
-                    foreach (var item in possible_requests)
-                    {
-                        if (str_request[2].Equals(item)) return item;
-                    }
-                }
-            }
-            throw new ServerExpection("Incorrect request!", 400);
-        }
-        
+        }      
     }
 }

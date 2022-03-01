@@ -1,25 +1,7 @@
 ﻿using System;
 
-namespace Project
+namespace Endpoint
 {
-    public class Message
-    {
-        public Message(string _message) { message = _message; }
-        public string message { get; set; }
-    }
-    public class ErrorMessage
-    {
-        public ErrorMessage(string message) { Error = message; }
-        public string Error { get; set; }
-    }
-    public class Link
-    {
-        public Link(string url) { Url = url; }
-        public string Url { get; set; }
-    }
-
-
-
     class Program
     {
         static void Main(string[] args)
