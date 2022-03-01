@@ -2,17 +2,17 @@
 using System.Data.SqlClient;
 
 
-namespace Project
+namespace Endpoint
 {
-    class Database
+    class DatabaseController
     {
         SqlConnection sqlConn = null;
-        public Database(string connectionStr)
+        public DatabaseController(string connectionStr)
         {
             sqlConn = new SqlConnection(connectionStr);
             sqlConn.Open();
         }
-        ~Database()
+        ~DatabaseController()
         {
             sqlConn.Close();
         }
@@ -31,7 +31,7 @@ namespace Project
             return command.ExecuteNonQuery();
         }
 
-        public string ExecuteSelectFromDB(string id, bool name = false)
+        public string ExecuteSelectFromDB(string id, bool get_name = false)
         {
             string path;
             const string sql_comm = "SELECT * from [Pictures] where (id) = ";
@@ -40,7 +40,7 @@ namespace Project
             try
             {
                 sqlDataReader.Read();
-                if(name) path = sqlDataReader["name"].ToString();
+                if(get_name) path = sqlDataReader["name"].ToString();
                 else path = sqlDataReader["path"].ToString();
                 sqlDataReader.Close();
                 return path;
