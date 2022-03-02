@@ -1,3 +1,4 @@
 .vs
-endpoint/bin
-endpoint/obj
+AspEndpoint/obj
+AspEndpoint/bin
+AspEndpoint/Images
