@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
+﻿using AspEndpoint.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace AspEndpoint.Models
+namespace AspEndpoint.Data
 {
     public class ImageContext : DbContext
     {
@@ -9,7 +9,7 @@ namespace AspEndpoint.Models
             : base(options)
         {
         }
-        public DbSet<ImageModel> TodoItems { get; set; } = null!;
+        public DbSet<ImageModel> images { get; set; } = null!;
     }
 
 }
