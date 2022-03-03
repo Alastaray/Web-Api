@@ -6,127 +6,196 @@
 	},
 	"item": [
 		{
-			"name": "End",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8888/end",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8888",
-					"path": [
-						"end"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Upload by url",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8888/api/upload-by-url?url=https://avatarko.ru/img/kartinka/2/zhivotnye_kot_prikol_ochki_1637.jpg",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8888",
-					"path": [
-						"api",
-						"upload-by-url"
-					],
-					"query": [
-						{
-							"key": "url",
-							"value": "https://avatarko.ru/img/kartinka/2/zhivotnye_kot_prikol_ochki_1637.jpg"
-						},
-						{
-							"key": "id",
-							"value": "321",
-							"disabled": true
+			"name": "ConsoleEndpoint",
+			"item": [
+				{
+					"name": "End",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/api/end",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"end"
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Url",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8888/api/get-url/?id=2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8888",
-					"path": [
-						"api",
-						"get-url",
-						""
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "2"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Url",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/api/get-url/?id=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"get-url",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
 						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get New Url",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8888/api/get-new-url",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8888",
-					"path": [
-						"api",
-						"get-new-url"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Remove",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8888/api/remove?id=2",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8888",
-					"path": [
-						"api",
-						"remove"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "2"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload by url",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/api/upload-by-url?url=https://n1s1.hsmedia.ru/00/07/3b/00073b44cbcc628624197c16b01a91a0/728x1294_1_2052739535b7028fbe538a7278ecd7c8@1152x2048_0xac120003_19331758041591010989.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"upload-by-url"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://n1s1.hsmedia.ru/00/07/3b/00073b44cbcc628624197c16b01a91a0/728x1294_1_2052739535b7028fbe538a7278ecd7c8@1152x2048_0xac120003_19331758041591010989.jpg"
+								},
+								{
+									"key": "id",
+									"value": "196565",
+									"disabled": true
+								}
+							]
 						}
-					]
+					},
+					"response": []
+				},
+				{
+					"name": "Remove",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/api/remove?id=7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"api",
+								"remove"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "AspEndpoint",
+			"item": [
+				{
+					"name": "Upload-by-url",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44369/api/upload-by-url?url=https://st2.depositphotos.com/1064024/10769/i/600/depositphotos_107694484-stock-photo-little-boy.jpg",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44369",
+							"path": [
+								"api",
+								"upload-by-url"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://st2.depositphotos.com/1064024/10769/i/600/depositphotos_107694484-stock-photo-little-boy.jpg"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get-url",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44369/api/get-url?id=3",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44369",
+							"path": [
+								"api",
+								"get-url"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:44369/api/remove?id=2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44369",
+							"path": [
+								"api",
+								"remove"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
