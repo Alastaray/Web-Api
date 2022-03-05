@@ -1,4 +1,5 @@
 ﻿using AspEndpoint.Models;
+using AspEndpoint.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -20,15 +21,9 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                if (GetPictureSize(url) > 5) throw new Exception("Image has size than more 5MB!");
-                Image image = new Image();
-                if (!image.Download(url)) return BadRequest(new ErrorMessageModel { Error = "Image already exists!" });              
-                image.Cut(100);
-                image.Cut(300);
-                await context.images.AddAsync(image.imageModel);
-                await context.SaveChangesAsync();
+                ImageDownloadService imageDownloadService = new ImageDownloadService(context);
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                return Ok(new LinkModel { Url = host + image.imageModel.Path + image.imageModel.Name });
+                return Ok(new LinkModel { Url = host + await imageDownloadService.DownloadImageAsync(url)});
             }
             catch (WebException)
             {
@@ -53,30 +48,20 @@ namespace AspEndpoint.Controllers
         [HttpGet]
         [Route("api/remove")]
         public async Task<IActionResult> RemoveImage(int id)
-        {           
-            var image = await context.images.FindAsync(id);
-            if (image == null) return NotFound(new ErrorMessageModel { Error = "Record doesnot found!" });
-            if (image.CutSizes != null)
+        {
+            try
             {
-                string[] cut_sizes = image.CutSizes.Split('x');
-                foreach (string cut_size in cut_sizes)
-                    System.IO.File.Delete(image.Path + cut_size + "_" + image.Name);
+                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(context);
+                return Ok(new MessageModel { message = await imageRemoveServise.RemoveImage(id) });
             }
-            System.IO.File.Delete(image.Path + image.Name);
-            context.images.Remove(image);
-            await context.SaveChangesAsync();
-            return Ok(new MessageModel { message = "Successfully deleting!" });
+            catch (Exception er)
+            {
+                return BadRequest(new ErrorMessageModel { Error = er.Message });
+            }
+
         }
 
-        private double GetPictureSize(string Url)
-        {
-            HttpClient webRequest = new HttpClient();
-            using (var webResponse = webRequest.GetAsync(Url))
-            {
-                string[] fileSizeBytes = (string[])webResponse.Result.Content.Headers.GetValues("Content-Length");
-                return Math.Round(Convert.ToDouble(fileSizeBytes[0]) / 1024.0 / 1024.0, 2);
-            }
-        }
+        
        
     }
 }
