@@ -9,43 +9,42 @@ namespace AspEndpoint
     {
         public ImageModel imageModel { get; set; }
 
-        public Picture()
+        public Picture(string? path = null, string? name = null)
         {
             imageModel = new ImageModel();
+            imageModel.Name = name;
+            imageModel.Path = path;
         }
 
-        public async Task<bool> DownloadAsync(string url)
+        public async Task<bool> DownloadAsync(string url, string? path = null, string? name = null)
         {
             HttpClient httpClient = new HttpClient();
-            imageModel.Name = url.Split(new char[] { '/' })[^1];
+            byte[] file;
             try
-            { 
-                var file = await httpClient.GetByteArrayAsync(url);
-                try
-                {
-                    imageModel.Path = Directory.GetCurrentDirectory() + "\\Images\\";
-                    if (!File.Exists(imageModel.Path + imageModel.Name))
-                    {
-                        File.WriteAllBytes(imageModel.Path + imageModel.Name, file);
-                        return true;
-                    }
-                    else return false;
-                }
-                catch (WebException)
-                {
-                    imageModel.Path = Directory.GetCurrentDirectory() + "\\";
-                    if (!File.Exists(imageModel.Path + imageModel.Name))
-                    {
-                        File.WriteAllBytes(imageModel.Path + imageModel.Name, file);
-                        return true;
-                    }
-                    else return false;
-                }
+            {
+                file = await httpClient.GetByteArrayAsync(url);
             }
             catch (Exception)
             {
                 throw new Exception("Url is incorrect!");
-            }           
+            }
+            if (imageModel.Name == null)
+            {
+                if (name == null) imageModel.Name = url.Split(new char[] { '/' })[^1];
+                else imageModel.Name = name;
+            }
+            if (imageModel.Path == null)
+            {
+                if (path == null) imageModel.Path = Directory.GetCurrentDirectory() + "\\";
+                else imageModel.Path = path;
+            }
+            if (!File.Exists(imageModel.Path + imageModel.Name))
+            {
+                File.WriteAllBytes(imageModel.Path + imageModel.Name, file);
+                return true;
+            }
+            else return false;
+
         }
         public async Task CutAsync(int new_size)
         {

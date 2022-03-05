@@ -13,7 +13,16 @@ namespace AspEndpoint.Services
         {
             if (GetPictureSize(url) > 5) throw new Exception("Image has size than more 5MB!");
             Picture image = new Picture();
-            if (!await image.DownloadAsync(url)) throw new Exception("Image already exists!");
+            bool result = false;
+            try
+            {
+                result = await image.DownloadAsync(url, Directory.GetCurrentDirectory() + "\\Image\\");            
+            }
+            catch (Exception)
+            {
+                result = await image.DownloadAsync(url);
+            }
+            if(!result) throw new Exception("Image already exists!");
             await image.CutAsync(100);
             await image.CutAsync(300);
             await context.images.AddAsync(image.imageModel);
