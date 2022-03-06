@@ -7,14 +7,13 @@ namespace CutBenchmark
 {
     [MemoryDiagnoser]
     [RankColumn]
-    public class CutTesting
+    public class CutTestingBDN
     {
-        public const string path = "C:\\";
-        public const string name = "test.jpg";
-        public Picture picture;
-        public CutTesting()
+        
+        private Picture picture;
+        public CutTestingBDN()
         {
-            picture = new Picture(path, name);                     
+            picture = new Picture(ConfigImage.Path, ConfigImage.Name);                     
         }
         [Benchmark]
         [IterationCount(100)]

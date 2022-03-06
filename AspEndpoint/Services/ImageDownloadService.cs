@@ -4,10 +4,10 @@ namespace AspEndpoint.Services
 {
     public class ImageDownloadService
     {
-        private readonly ImageContext context;
-        public ImageDownloadService(ImageContext _context)
+        private readonly ImageContext _imageContext;
+        public ImageDownloadService(ImageContext context)
         {
-            context = _context;
+            _imageContext = context;
         }
         public async Task<string> DownloadImageAsync(string url)
         {
@@ -25,8 +25,8 @@ namespace AspEndpoint.Services
             if(!result) throw new Exception("Image already exists!");
             await image.CutAsync(100);
             await image.CutAsync(300);
-            await context.images.AddAsync(image.imageModel);
-            await context.SaveChangesAsync();
+            await _imageContext.images.AddAsync(image.imageModel);
+            await _imageContext.SaveChangesAsync();
             return image.imageModel.Path + image.imageModel.Name;
         }
 

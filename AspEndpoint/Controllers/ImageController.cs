@@ -9,10 +9,10 @@ namespace AspEndpoint.Controllers
 
     public class ImageController : ControllerBase
     {
-        private readonly ImageContext context;
-        public ImageController(ImageContext _context)
+        private readonly ImageContext _imageContext;
+        public ImageController(ImageContext context)
         {
-            context = _context;
+            _imageContext = context;
         }
 
         [HttpPost]
@@ -21,7 +21,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                ImageDownloadService imageDownloadService = new ImageDownloadService(context);
+                ImageDownloadService imageDownloadService = new ImageDownloadService(_imageContext);
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
                 return Ok(new LinkModel { Url = host + await imageDownloadService.DownloadImageAsync(url)});
             }
@@ -40,7 +40,7 @@ namespace AspEndpoint.Controllers
         public async Task<IActionResult> GetUrl(int id)
         {
             string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-            var image = await context.images.FindAsync(id);
+            var image = await _imageContext.images.FindAsync(id);
             if (image == null) return NotFound(new ErrorMessageModel { Error = "Record doesnot found!" });
             return Ok(new LinkModel { Url = host + image.Path + image.Name });
         }
@@ -51,8 +51,8 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(context);
-                return Ok(new MessageModel { message = await imageRemoveServise.RemoveImage(id) });
+                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(_imageContext);
+                return Ok(new MessageModel { Message = await imageRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)
             {

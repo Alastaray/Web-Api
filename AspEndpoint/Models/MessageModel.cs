@@ -3,7 +3,7 @@ namespace AspEndpoint.Models
 {
     public class MessageModel
     {
-        public string? message { get; set; }
+        public string? Message { get; set; }
     }
     public class ErrorMessageModel
     {
