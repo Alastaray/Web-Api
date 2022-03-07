@@ -1,6 +1,4 @@
-﻿using AspEndpoint.Models;
-
-namespace AspEndpoint.Services
+﻿namespace AspEndpoint.Services
 {
     public class ImageDownloadService
     {
@@ -9,27 +7,31 @@ namespace AspEndpoint.Services
         {
             _imageContext = context;
         }
-        public async Task<string> DownloadImageAsync(string url)
+        public async Task<string> ProcessImageAsync(string url)
         {
             if (GetPictureSize(url) > 5) throw new Exception("Image has size than more 5MB!");
-            Picture image = new Picture();
+            Picture picture = new Picture();            
+            if(!await TryDownloadImageAsync(picture, url)) 
+                throw new Exception("Image already exists!");
+            await picture.CutAsync(100);
+            await picture.CutAsync(300);
+            await _imageContext.images.AddAsync(picture.imageModel);
+            await _imageContext.SaveChangesAsync();
+            return picture.imageModel.Path + picture.imageModel.Name;
+        }
+        public async Task<bool> TryDownloadImageAsync(Picture picture, string url)
+        {
             bool result = false;
             try
             {
-                result = await image.DownloadAsync(url, Directory.GetCurrentDirectory() + "\\Image\\");            
+                result = await picture.DownloadAsync(url, Directory.GetCurrentDirectory() + "\\Images\\");
             }
             catch (Exception)
             {
-                result = await image.DownloadAsync(url);
+                result = await picture.DownloadAsync(url, Directory.GetCurrentDirectory() + "\\");
             }
-            if(!result) throw new Exception("Image already exists!");
-            await image.CutAsync(100);
-            await image.CutAsync(300);
-            await _imageContext.images.AddAsync(image.imageModel);
-            await _imageContext.SaveChangesAsync();
-            return image.imageModel.Path + image.imageModel.Name;
+            return result;
         }
-
 
         public double GetPictureSize(string Url)
         {

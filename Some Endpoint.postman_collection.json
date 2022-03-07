@@ -122,8 +122,17 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\":\"https://www.imgonline.com.ua/examples/bee-on-daisy.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "https://localhost:44369/api/upload-by-url?url=https://st2.depositphotos.com/1064024/10769/i/600/depositphotos_107694484-stock-photo-little-boy.jpg",
+							"raw": "https://localhost:44369/api/upload-by-url",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -136,7 +145,8 @@
 							"query": [
 								{
 									"key": "url",
-									"value": "https://st2.depositphotos.com/1064024/10769/i/600/depositphotos_107694484-stock-photo-little-boy.jpg"
+									"value": "https://www.imgonline.com.ua/examples/bee-on-daisy.jpg",
+									"disabled": true
 								}
 							]
 						}
@@ -149,7 +159,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:44369/api/get-url?id=3",
+							"raw": "https://localhost:44369/api/get-url/:8",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -157,12 +167,20 @@
 							"port": "44369",
 							"path": [
 								"api",
-								"get-url"
+								"get-url",
+								":8"
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "3"
+									"value": "5",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "8",
+									"value": null
 								}
 							]
 						}
@@ -175,7 +193,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://localhost:44369/api/remove?id=2",
+							"raw": "https://localhost:44369/api/remove/:7",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -183,12 +201,13 @@
 							"port": "44369",
 							"path": [
 								"api",
-								"remove"
+								"remove",
+								":7"
 							],
-							"query": [
+							"variable": [
 								{
-									"key": "id",
-									"value": "2"
+									"key": "7",
+									"value": null
 								}
 							]
 						}

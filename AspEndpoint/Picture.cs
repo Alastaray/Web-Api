@@ -16,7 +16,7 @@ namespace AspEndpoint
             imageModel.Path = path;
         }
 
-        public async Task<bool> DownloadAsync(string url, string? path = null, string? name = null)
+        public async Task<bool> DownloadAsync(string url, string? path, string? name = null)
         {
             HttpClient httpClient = new HttpClient();
             byte[] file;
@@ -35,8 +35,7 @@ namespace AspEndpoint
             }
             if (imageModel.Path == null)
             {
-                if (path == null) imageModel.Path = Directory.GetCurrentDirectory() + "\\";
-                else imageModel.Path = path;
+                imageModel.Path = path;
             }
             if (!File.Exists(imageModel.Path + imageModel.Name))
             {

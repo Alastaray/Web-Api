@@ -11,10 +11,9 @@ namespace AspEndpoint.Services
         }
         public async Task<string> RemoveImage(int id)
         {
-            var image = await _imageContext.images.FindAsync(id);
-            if (image == null) throw new Exception("Record doesnot found!");
-            DeleteFiles(image);
-            _imageContext.images.Remove(image);
+            var imageModel = await new ImageGetServise(_imageContext).GetImageAsync(id);
+            DeleteFiles(imageModel);
+            _imageContext.images.Remove(imageModel);
             await _imageContext.SaveChangesAsync();
             return "Successfully deleting!";
         }
