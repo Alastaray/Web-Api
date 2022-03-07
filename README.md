@@ -9,4 +9,3 @@
 -	##### api/upload-by-url/:url
 -	##### api/get-url/:id
 -	##### api/remove/:id
--	##### api/end
