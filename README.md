@@ -6,6 +6,6 @@
 ##### All requests ease are sent by Postman.
 
 #### What request you can send:
--	##### api/upload-by-url/:url
+-	##### api/upload-by-url request body: {“url”: IMAGE_URL}
 -	##### api/get-url/:id
 -	##### api/remove/:id
