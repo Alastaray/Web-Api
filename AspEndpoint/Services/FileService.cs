@@ -1,10 +1,10 @@
 ﻿namespace AspEndpoint.Services
 {
-    public class ImageService
+    public class FileService
     {
         protected readonly ImageContext _imageContext;
         protected readonly IConfiguration _config;
-        public ImageService(ImageContext context, IConfiguration configuration)
+        public FileService(ImageContext context, IConfiguration configuration)
         {
             _imageContext = context;
             _config = configuration;

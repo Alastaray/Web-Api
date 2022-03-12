@@ -19,7 +19,7 @@ namespace AspEndpoint
 
             byte[] file = await httpClient.GetByteArrayAsync(url);
 
-            if (name == null) imageModel.Name = url.Split(new char[] { '/' })[^1];
+            if (name == null) imageModel.Name = url.Split('/')[^1];
             else imageModel.Name = name;
 
             if (path[^1] != '\\') imageModel.Path = path + "\\";
@@ -34,9 +34,8 @@ namespace AspEndpoint
                 return true;
             }
             else return false;
-
         }
-        public async Task CutAsync(int new_size)
+        public async Task CutAsync(int new_size) 
         {
             if (imageModel.Path != null && imageModel.Name != null)
             {

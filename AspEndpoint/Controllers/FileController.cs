@@ -7,11 +7,11 @@ namespace AspEndpoint.Controllers
 {
     [ApiController]  
 
-    public class ImageController : ControllerBase
+    public class FileController : ControllerBase
     {
         private readonly ImageContext _imageContext;
         private readonly IConfiguration _config;
-        public ImageController(ImageContext context, IConfiguration configuration)
+        public FileController(ImageContext context, IConfiguration configuration)
         {
             _imageContext = context;
             _config = configuration;
@@ -19,13 +19,14 @@ namespace AspEndpoint.Controllers
 
         [HttpPost]
         [Route("api/upload-by-url")]
-        public async Task<IActionResult> UploadByUrl([FromBody] UrlModel link)
+        public async Task<IActionResult> Upload([FromBody] UrlModel link)
         {
             try
             {
-                ImageDownloadService imageDownloadService = new ImageDownloadService(_imageContext, _config);
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                return Ok(new UrlModel { Url = host + await imageDownloadService.ProcessImageAsync(link.Url) });
+                FileDownloadService fileDownloadService = new FileDownloadService(_imageContext, _config);
+                string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
+                return Ok(new UrlModel { Url = host + filePath });
             }
             catch (WebException)
             {
@@ -39,12 +40,13 @@ namespace AspEndpoint.Controllers
 
         [HttpGet]
         [Route("api/get-url/:{id}")]
-        public async Task<IActionResult> GetUrl(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                var imageModel = await new ImageGetServise(_imageContext, _config).GetImageAsync(id);
+                FileGetServise fileGetServise = new FileGetServise(_imageContext, _config);
+                var imageModel = await fileGetServise.GetImageAsync(id);
                 return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
             }
             catch (Exception er)
@@ -55,12 +57,12 @@ namespace AspEndpoint.Controllers
 
         [HttpGet]
         [Route("api/remove/:{id}")]
-        public async Task<IActionResult> RemoveImage(int id)
+        public async Task<IActionResult> Remove(int id)
         {
             try
             {
-                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(_imageContext, _config);
-                return Ok(new MessageModel { Message = await imageRemoveServise.RemoveImage(id) });
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_imageContext, _config);
+                return Ok(new MessageModel { Message = await fileRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)
             {
