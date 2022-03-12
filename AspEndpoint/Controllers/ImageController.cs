@@ -1,9 +1,8 @@
 ﻿using AspEndpoint.Models;
 using AspEndpoint.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
-
+using Microsoft.Extensions.Configuration;
 namespace AspEndpoint.Controllers
 {
     [ApiController]  
@@ -11,9 +10,11 @@ namespace AspEndpoint.Controllers
     public class ImageController : ControllerBase
     {
         private readonly ImageContext _imageContext;
-        public ImageController(ImageContext context)
+        private readonly IConfiguration _config;
+        public ImageController(ImageContext context, IConfiguration configuration)
         {
             _imageContext = context;
+            _config = configuration;
         }
 
         [HttpPost]
@@ -22,7 +23,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                ImageDownloadService imageDownloadService = new ImageDownloadService(_imageContext);
+                ImageDownloadService imageDownloadService = new ImageDownloadService(_imageContext, _config);
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
                 return Ok(new UrlModel { Url = host + await imageDownloadService.ProcessImageAsync(link.Url) });
             }
@@ -43,7 +44,7 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                var imageModel = await new ImageGetServise(_imageContext).GetImageAsync(id);
+                var imageModel = await new ImageGetServise(_imageContext, _config).GetImageAsync(id);
                 return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
             }
             catch (Exception er)
@@ -58,7 +59,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(_imageContext);
+                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(_imageContext, _config);
                 return Ok(new MessageModel { Message = await imageRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)

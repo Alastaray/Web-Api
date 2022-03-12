@@ -2,13 +2,9 @@
 
 namespace AspEndpoint.Services
 {
-    public class ImageGetServise
+    public class ImageGetServise : ImageService
     {
-        private readonly ImageContext _imageContext;
-        public ImageGetServise(ImageContext context)
-        {
-            _imageContext = context;
-        }
+        public ImageGetServise(ImageContext context, IConfiguration configuration) : base(context, configuration) { }
         public async Task<ImageModel> GetImageAsync(int id)
         {
             var image = await _imageContext.images.FindAsync(id);

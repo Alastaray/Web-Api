@@ -1,7 +1,6 @@
 ﻿using AspEndpoint.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System.Net;
 
 namespace AspEndpoint
 {
@@ -9,34 +8,26 @@ namespace AspEndpoint
     {
         public ImageModel imageModel { get; set; }
 
-        public Picture(string? path = null, string? name = null)
+        public Picture()
         {
             imageModel = new ImageModel();
-            imageModel.Name = name;
-            imageModel.Path = path;
         }
 
-        public async Task<bool> DownloadAsync(string url, string? path, string? name = null)
+        public async Task<bool> DownloadAsync(string url, string path, string? name = null)
         {
             HttpClient httpClient = new HttpClient();
-            byte[] file;
-            try
-            {
-                file = await httpClient.GetByteArrayAsync(url);
-            }
-            catch (Exception)
-            {
-                throw new Exception("Url is incorrect!");
-            }
-            if (imageModel.Name == null)
-            {
-                if (name == null) imageModel.Name = url.Split(new char[] { '/' })[^1];
-                else imageModel.Name = name;
-            }
-            if (imageModel.Path == null)
-            {
-                imageModel.Path = path;
-            }
+
+            byte[] file = await httpClient.GetByteArrayAsync(url);
+
+            if (name == null) imageModel.Name = url.Split(new char[] { '/' })[^1];
+            else imageModel.Name = name;
+
+            if (path[^1] != '\\') imageModel.Path = path + "\\";
+            else imageModel.Path = path;
+
+            if (!Directory.Exists(imageModel.Path))
+                    Directory.CreateDirectory(imageModel.Path);
+
             if (!File.Exists(imageModel.Path + imageModel.Name))
             {
                 File.WriteAllBytes(imageModel.Path + imageModel.Name, file);
@@ -51,6 +42,7 @@ namespace AspEndpoint
             {
                 var image = await Image.LoadAsync(imageModel.Path + imageModel.Name);
                 image.Mutate(x => x.Resize(GetNewPictureSize(image.Size(), new_size)));
+                imageModel.CutSizes += new_size + "x";
                 string new_path = String.Empty;
                 new_path = imageModel.Path + new_size + "_" + imageModel.Name;
                 await image.SaveAsync(new_path);
@@ -63,6 +55,7 @@ namespace AspEndpoint
             {
                 var image = Image.Load(imageModel.Path + imageModel.Name);
                 image.Mutate(x => x.Resize(GetNewPictureSize(image.Size(), new_size)));
+                imageModel.CutSizes += new_size + "x";
                 string new_path = String.Empty;
                 new_path = imageModel.Path + new_size + "_" + imageModel.Name;
                 image.Save(new_path);
