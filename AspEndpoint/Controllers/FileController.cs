@@ -1,30 +1,32 @@
 ﻿using AspEndpoint.Models;
 using AspEndpoint.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
-
+using Microsoft.Extensions.Configuration;
 namespace AspEndpoint.Controllers
 {
     [ApiController]  
 
-    public class ImageController : ControllerBase
+    public class FileController : ControllerBase
     {
-        private readonly ImageContext _imageContext;
-        public ImageController(ImageContext context)
+        private readonly FileContext _fileContext;
+        private readonly IConfiguration _config;
+        public FileController(FileContext context, IConfiguration configuration)
         {
-            _imageContext = context;
+            _fileContext = context;
+            _config = configuration;
         }
 
         [HttpPost]
         [Route("api/upload-by-url")]
-        public async Task<IActionResult> UploadByUrl([FromBody] UrlModel link)
+        public async Task<IActionResult> Upload([FromBody] UrlModel link)
         {
             try
             {
-                ImageDownloadService imageDownloadService = new ImageDownloadService(_imageContext);
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                return Ok(new UrlModel { Url = host + await imageDownloadService.ProcessImageAsync(link.Url) });
+                FileDownloadService fileDownloadService = new FileDownloadService(_fileContext, _config);
+                string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
+                return Ok(new UrlModel { Url = host + filePath });
             }
             catch (WebException)
             {
@@ -38,12 +40,13 @@ namespace AspEndpoint.Controllers
 
         [HttpGet]
         [Route("api/get-url/:{id}")]
-        public async Task<IActionResult> GetUrl(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                var imageModel = await new ImageGetServise(_imageContext).GetImageAsync(id);
+                FileGetServise fileGetServise = new FileGetServise(_fileContext, _config);
+                var imageModel = await fileGetServise.GetFileAsync(id);
                 return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
             }
             catch (Exception er)
@@ -54,12 +57,12 @@ namespace AspEndpoint.Controllers
 
         [HttpGet]
         [Route("api/remove/:{id}")]
-        public async Task<IActionResult> RemoveImage(int id)
+        public async Task<IActionResult> Remove(int id)
         {
             try
             {
-                ImageRemoveServise imageRemoveServise = new ImageRemoveServise(_imageContext);
-                return Ok(new MessageModel { Message = await imageRemoveServise.RemoveImage(id) });
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_fileContext, _config);
+                return Ok(new MessageModel { Message = await fileRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)
             {

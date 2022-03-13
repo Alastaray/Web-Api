@@ -3,11 +3,10 @@ global using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ImageContext>(options =>
+builder.Services.AddDbContext<FileContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")); 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")); 
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,3 +28,9 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static class MyClass
+{
+    public const string asd = "asd";
+
+}

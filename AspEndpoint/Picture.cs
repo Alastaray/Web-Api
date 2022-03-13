@@ -1,89 +1,44 @@
-﻿using AspEndpoint.Models;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using System.Net;
 
 namespace AspEndpoint
 {
-    public class Picture
+    public static class Picture
     {
-        public ImageModel imageModel { get; set; }
-
-        public Picture(string? path = null, string? name = null)
+        static public byte[]? Cut(byte[] file, int size)
         {
-            imageModel = new ImageModel();
-            imageModel.Name = name;
-            imageModel.Path = path;
+            using var memoryStream = new MemoryStream();
+            var image = Image.Load(file);
+            Size oldSize = image.Size();
+            Size newSize = GetNewPictureSize(oldSize, size);
+            if(!oldSize.Equals(newSize))
+            {
+                image.Mutate(x => x.Resize(newSize));
+                image.SaveAsJpeg(memoryStream);
+                return memoryStream.ToArray();
+            }
+            return null;
         }
 
-        public async Task<bool> DownloadAsync(string url, string? path, string? name = null)
+        static private Size GetNewPictureSize(Size oldSize, int newSize)
         {
-            HttpClient httpClient = new HttpClient();
-            byte[] file;
-            try
+            if (newSize != 0)
             {
-                file = await httpClient.GetByteArrayAsync(url);
-            }
-            catch (Exception)
-            {
-                throw new Exception("Url is incorrect!");
-            }
-            if (imageModel.Name == null)
-            {
-                if (name == null) imageModel.Name = url.Split(new char[] { '/' })[^1];
-                else imageModel.Name = name;
-            }
-            if (imageModel.Path == null)
-            {
-                imageModel.Path = path;
-            }
-            if (!File.Exists(imageModel.Path + imageModel.Name))
-            {
-                File.WriteAllBytes(imageModel.Path + imageModel.Name, file);
-                return true;
-            }
-            else return false;
-
-        }
-        public async Task CutAsync(int new_size)
-        {
-            if (imageModel.Path != null && imageModel.Name != null)
-            {
-                var image = await Image.LoadAsync(imageModel.Path + imageModel.Name);
-                image.Mutate(x => x.Resize(GetNewPictureSize(image.Size(), new_size)));
-                string new_path = String.Empty;
-                new_path = imageModel.Path + new_size + "_" + imageModel.Name;
-                await image.SaveAsync(new_path);
-            }
-            else throw new Exception("ImageModel is empty!");
-        }
-        public void Cut(int new_size)
-        {
-            if (imageModel.Path != null && imageModel.Name != null)
-            {
-                var image = Image.Load(imageModel.Path + imageModel.Name);
-                image.Mutate(x => x.Resize(GetNewPictureSize(image.Size(), new_size)));
-                string new_path = String.Empty;
-                new_path = imageModel.Path + new_size + "_" + imageModel.Name;
-                image.Save(new_path);
-            }
-            else throw new Exception("ImageModel is empty!");
-        }
-
-
-        private Size GetNewPictureSize(Size old_size, int new_size)
-        {
-            if (new_size != 0)
-            {
-                int width = old_size.Width,
-                height = old_size.Height,
-                width_modifier = width / new_size,
-                height_modifier = height / new_size,
-                modifier = width_modifier.Equals(height_modifier) ? width_modifier : height_modifier;
-                return new Size(width / modifier, height / modifier);
+                int width = oldSize.Width,
+                    height = oldSize.Height;
+                if(width > height)
+                {
+                    double modifier = width * 1.0 / height;
+                    return new Size((int)(modifier * newSize), newSize);
+                }
+                else
+                {
+                    double modifier = height * 1.0 / width;
+                    return new Size(newSize, (int)(modifier * newSize));
+                }                  
             }
             else
-                return old_size;
+                return oldSize;
         }
     }
 }
