@@ -2,7 +2,7 @@
 
 namespace AspEndpoint.Models
 {
-    public class ImageModel
+    public class FileModel
     {
         public int Id { get; set; }
         public string? Path { get; set; } = string.Empty;

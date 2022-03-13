@@ -4,16 +4,16 @@ namespace AspEndpoint.Services
 {
     public class FileRemoveServise : FileService
     {
-        public FileRemoveServise(ImageContext context, IConfiguration configuration) : base(context, configuration) { }
+        public FileRemoveServise(FileContext context, IConfiguration configuration) : base(context, configuration) { }
         public async Task<string> RemoveImage(int id)
         {
-            var imageModel = await new FileGetServise(_imageContext, _config).GetImageAsync(id);
+            var imageModel = await new FileGetServise(_fileContext, _config).GetImageAsync(id);
             DeleteFiles(imageModel);
-            _imageContext.images.Remove(imageModel);
-            await _imageContext.SaveChangesAsync();
+            _fileContext.files.Remove(imageModel);
+            await _fileContext.SaveChangesAsync();
             return "Successfully deleting!";
         }
-        public void DeleteFiles(ImageModel image)
+        public void DeleteFiles(FileModel image)
         {
             if (image.CutSizes != null)
             {

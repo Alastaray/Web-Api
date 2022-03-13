@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AspEndpoint.Migrations
 {
-    [DbContext(typeof(ImageContext))]
-    [Migration("20220303153734_Initial")]
-    partial class Initial
+    [DbContext(typeof(FileContext))]
+    [Migration("20220313142045_CreateInitial")]
+    partial class CreateInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,7 @@ namespace AspEndpoint.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AspEndpoint.Models.ImageModel", b =>
+            modelBuilder.Entity("AspEndpoint.Models.FileModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace AspEndpoint.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("images");
+                    b.ToTable("files");
                 });
 #pragma warning restore 612, 618
         }

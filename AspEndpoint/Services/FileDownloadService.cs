@@ -1,21 +1,33 @@
 ﻿using AspEndpoint.Models;
+using Storage.Net;
+using Storage.Net.Blobs;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace AspEndpoint.Services
 {
     public class FileDownloadService : FileService
     {
-        public FileDownloadService(ImageContext context, IConfiguration configuration) : base(context, configuration) { }
+        protected readonly IBlobStorage _storage;
+        public readonly FileModel fileModel;
+        public FileDownloadService(FileContext context, IConfiguration configuration) : base(context, configuration) 
+        {
+            fileModel = new FileModel();
+            _storage = StorageFactory.Blobs.FromConnectionString(configuration.GetConnectionString("StorageConnection"));
+
+        }
 
         public async Task<string> FileDownloadAsync(string url)
         {
             await CheckFileSizeAsync(url);
-            Picture picture = await DownloadAsync(url, Directory.GetCurrentDirectory() + "\\Files");      
-            if(IsImage(picture.imageModel.Name))
+            await DownloadAsync(url);
+            /*if (IsImage(fileModel.Name))
             {
+                Picture picture = new Picture(fileModel);
                 await picture.CutAsync(100);
                 await picture.CutAsync(300);
-            }
-            return await SaveToDatabaseAsync(picture.imageModel);
+            }*/
+            return await SaveToDatabaseAsync(fileModel);
         }
 
         public bool IsImage(string? fileName)
@@ -48,19 +60,22 @@ namespace AspEndpoint.Services
                 throw new Exception("File has size than more " + maxFileSize + "MB!");
         }
 
-        public async Task<string> SaveToDatabaseAsync(ImageModel imageModel)
+        public async Task<string> SaveToDatabaseAsync(FileModel fileModel)
         {
-            await _imageContext.images.AddAsync(imageModel);
-            await _imageContext.SaveChangesAsync();
-            return imageModel.Path + imageModel.Name;
+            await _fileContext.files.AddAsync(fileModel);
+            await _fileContext.SaveChangesAsync();
+            return fileModel.Path + fileModel.Name;
         }
 
-        public async Task<Picture> DownloadAsync(string url, string Path)
+        public async Task DownloadAsync(string url)
         {
-            Picture picture = new Picture();
-            if (!await picture.DownloadAsync(url, Path))
-                throw new Exception("File already exists!");
-            return picture;
+            HttpClient httpClient = new HttpClient();
+            byte[] file = await httpClient.GetByteArrayAsync(url);
+            fileModel.Name = Hasher.CreateHashName(url);
+            fileModel.Path = Hasher.CreateHashPath(fileModel.Name);
+            await _storage.WriteAsync(fileModel.Path + fileModel.Name, file);
         }
+
+       
     }
 }

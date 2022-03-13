@@ -9,11 +9,11 @@ namespace AspEndpoint.Controllers
 
     public class FileController : ControllerBase
     {
-        private readonly ImageContext _imageContext;
+        private readonly FileContext _fileContext;
         private readonly IConfiguration _config;
-        public FileController(ImageContext context, IConfiguration configuration)
+        public FileController(FileContext context, IConfiguration configuration)
         {
-            _imageContext = context;
+            _fileContext = context;
             _config = configuration;
         }
 
@@ -24,7 +24,7 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileDownloadService fileDownloadService = new FileDownloadService(_imageContext, _config);
+                FileDownloadService fileDownloadService = new FileDownloadService(_fileContext, _config);
                 string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
                 return Ok(new UrlModel { Url = host + filePath });
             }
@@ -45,7 +45,7 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileGetServise fileGetServise = new FileGetServise(_imageContext, _config);
+                FileGetServise fileGetServise = new FileGetServise(_fileContext, _config);
                 var imageModel = await fileGetServise.GetImageAsync(id);
                 return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
             }
@@ -61,7 +61,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_imageContext, _config);
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_fileContext, _config);
                 return Ok(new MessageModel { Message = await fileRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)

@@ -4,12 +4,12 @@
 
 namespace AspEndpoint.Migrations
 {
-    public partial class Initial : Migration
+    public partial class CreateInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "images",
+                name: "files",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -20,14 +20,14 @@ namespace AspEndpoint.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_images", x => x.Id);
+                    table.PrimaryKey("PK_files", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "images");
+                name: "files");
         }
     }
 }

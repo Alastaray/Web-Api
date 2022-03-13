@@ -4,7 +4,7 @@ global using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddDbContext<ImageContext>(options =>
+builder.Services.AddDbContext<FileContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")); 
 });
