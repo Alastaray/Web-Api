@@ -46,7 +46,7 @@ namespace AspEndpoint.Controllers
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
                 FileGetServise fileGetServise = new FileGetServise(_fileContext, _config);
-                var imageModel = await fileGetServise.GetImageAsync(id);
+                var imageModel = await fileGetServise.GetFileAsync(id);
                 return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
             }
             catch (Exception er)

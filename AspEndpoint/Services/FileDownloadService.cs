@@ -1,20 +1,15 @@
 ﻿using AspEndpoint.Models;
-using Storage.Net;
 using Storage.Net.Blobs;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
+
 
 namespace AspEndpoint.Services
 {
     public class FileDownloadService : FileService
     {
-        protected readonly IBlobStorage _storage;
         public readonly FileModel fileModel;
         public FileDownloadService(FileContext context, IConfiguration configuration) : base(context, configuration) 
         {
             fileModel = new FileModel();
-            _storage = StorageFactory.Blobs.FromConnectionString(configuration.GetConnectionString("StorageConnection"));
-
         }
 
         public async Task<string> FileDownloadAsync(string url)

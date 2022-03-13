@@ -1,27 +1,35 @@
 ﻿using AspEndpoint.Models;
-
+using Storage.Net.Blobs;
 namespace AspEndpoint.Services
 {
     public class FileRemoveServise : FileService
     {
         public FileRemoveServise(FileContext context, IConfiguration configuration) : base(context, configuration) { }
+
         public async Task<string> RemoveImage(int id)
         {
-            var imageModel = await new FileGetServise(_fileContext, _config).GetImageAsync(id);
-            DeleteFiles(imageModel);
-            _fileContext.files.Remove(imageModel);
+            var fileModel = await new FileGetServise(_fileContext, _config).GetFileAsync(id);
+            await RemoveFilesAsync(fileModel);
+            _fileContext.files.Remove(fileModel);
             await _fileContext.SaveChangesAsync();
             return "Successfully deleting!";
         }
-        public void DeleteFiles(FileModel image)
+        private async Task RemoveFilesAsync(FileModel file)
         {
-            if (image.CutSizes != null)
+            var filesList = await _storage.ListAsync(file.Path);
+            foreach (var fileModel in filesList)
+                await _storage.DeleteAsync(fileModel);
+
+            if(file.Path != null)
             {
-                string[] cut_sizes = image.CutSizes.Split('x');
-                foreach (string cut_size in cut_sizes)
-                    File.Delete(image.Path + cut_size + "_" + image.Name);
+                string[]? folders = file.Path.Split('/');
+                foreach (var folder in folders)
+                {
+                    if(folder != "")
+                        await _storage.DeleteAsync(folder);
+                }                   
             }
-            File.Delete(image.Path + image.Name);
+            
         }
     }
 }

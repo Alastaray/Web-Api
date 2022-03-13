@@ -1,13 +1,10 @@
-﻿using AspEndpoint.Models;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 namespace AspEndpoint
 {
     public static class Picture
     {
-
-
         static public byte[]? Cut(byte[] file, int size)
         {
             using var memoryStream = new MemoryStream();
