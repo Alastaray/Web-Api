@@ -21,13 +21,13 @@ namespace AspEndpoint.Services
         {
             await CheckFileSizeAsync(url);
             await DownloadAsync(url);
-            /*if (IsImage(fileModel.Name))
+            if (IsImage(fileModel.Name))
             {
-                Picture picture = new Picture(fileModel);
-                await picture.CutAsync(100);
-                await picture.CutAsync(300);
-            }*/
-            return await SaveToDatabaseAsync(fileModel);
+                byte[] file = await _storage.ReadBytesAsync(fileModel.Path + fileModel.Name);
+                await CutImageAsync(file, 100);
+                await CutImageAsync(file, 300);
+            }
+            return await SaveToDatabaseAsync();
         }
 
         public bool IsImage(string? fileName)
@@ -60,14 +60,14 @@ namespace AspEndpoint.Services
                 throw new Exception("File has size than more " + maxFileSize + "MB!");
         }
 
-        public async Task<string> SaveToDatabaseAsync(FileModel fileModel)
+        private async Task<string> SaveToDatabaseAsync()
         {
             await _fileContext.files.AddAsync(fileModel);
             await _fileContext.SaveChangesAsync();
             return fileModel.Path + fileModel.Name;
         }
 
-        public async Task DownloadAsync(string url)
+        private async Task DownloadAsync(string url)
         {
             HttpClient httpClient = new HttpClient();
             byte[] file = await httpClient.GetByteArrayAsync(url);
@@ -76,6 +76,11 @@ namespace AspEndpoint.Services
             await _storage.WriteAsync(fileModel.Path + fileModel.Name, file);
         }
 
-       
+        private async Task CutImageAsync(byte[] file, int newSize)
+        {
+            byte[]? newFile = Picture.Cut(file, newSize);
+            if (newFile == null) return;
+            await _storage.WriteAsync(fileModel.Path + newSize + "_" + fileModel.Name, newFile);
+        }
     }
 }
