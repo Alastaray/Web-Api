@@ -2,7 +2,7 @@
 using AspEndpoint.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Microsoft.Extensions.Configuration;
+
 namespace AspEndpoint.Controllers
 {
     [ApiController]  

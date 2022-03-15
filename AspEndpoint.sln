@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspEndpoint", "AspEndpoint\AspEndpoint.csproj", "{D81AE0BE-07C0-4AC1-8C22-5B09893736CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CutBenchmark", "CutBenchmark\CutBenchmark.csproj", "{E44FBC0A-29E8-48AE-BABE-684F202AA9BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManagerProject", "FileManagerProject\FileManagerProject.csproj", "{25A09BE9-9294-46A2-BDDE-0C79D95419D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{D81AE0BE-07C0-4AC1-8C22-5B09893736CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D81AE0BE-07C0-4AC1-8C22-5B09893736CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D81AE0BE-07C0-4AC1-8C22-5B09893736CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E44FBC0A-29E8-48AE-BABE-684F202AA9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E44FBC0A-29E8-48AE-BABE-684F202AA9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E44FBC0A-29E8-48AE-BABE-684F202AA9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E44FBC0A-29E8-48AE-BABE-684F202AA9BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25A09BE9-9294-46A2-BDDE-0C79D95419D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25A09BE9-9294-46A2-BDDE-0C79D95419D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25A09BE9-9294-46A2-BDDE-0C79D95419D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25A09BE9-9294-46A2-BDDE-0C79D95419D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
