@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace AspEndpoint
+namespace FileManagerProject
 {
     public static class Hasher
     {

@@ -1,8 +1,9 @@
 ﻿using AspEndpoint.Models;
 using AspEndpoint.Services;
+using FileManagerProject;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using Microsoft.Extensions.Configuration;
+
 namespace AspEndpoint.Controllers
 {
     [ApiController]  
@@ -10,11 +11,11 @@ namespace AspEndpoint.Controllers
     public class FileController : ControllerBase
     {
         private readonly FileContext _fileContext;
-        private readonly IConfiguration _config;
-        public FileController(FileContext context, IConfiguration configuration)
+        private readonly IFileManager _fileManager;
+        public FileController(FileContext context, IFileManager fileManager)
         {
             _fileContext = context;
-            _config = configuration;
+            _fileManager = fileManager;
         }
 
         [HttpPost]
@@ -24,7 +25,7 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileDownloadService fileDownloadService = new FileDownloadService(_fileContext, _config);
+                FileDownloadService fileDownloadService = new FileDownloadService(_fileContext, _fileManager);
                 string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
                 return Ok(new UrlModel { Url = host + filePath });
             }
@@ -45,7 +46,7 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileGetServise fileGetServise = new FileGetServise(_fileContext, _config);
+                FileGetServise fileGetServise = new FileGetServise(_fileContext);
                 var imageModel = await fileGetServise.GetFileAsync(id);
                 return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
             }
@@ -61,7 +62,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_fileContext, _config);
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_fileContext, _fileManager);
                 return Ok(new MessageModel { Message = await fileRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)
