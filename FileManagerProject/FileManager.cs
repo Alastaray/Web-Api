@@ -4,10 +4,9 @@ using System.Configuration;
 
 namespace FileManagerProject
 {
-    internal class FileManager : IFileManager
+    public class FileManager : IFileManager
     {
         IBlobStorage _storage;
-        public IBlobStorage blobStorage { get { return _storage; } }
         public FileManager()
         {
             StorageFactory.Modules.UseGoogleCloudStorage();
@@ -66,6 +65,16 @@ namespace FileManagerProject
             var webResponse = await webRequest.GetAsync(url);
             string[] fileSizeBytes = (string[])webResponse.Content.Headers.GetValues("Content-Length");
             return Math.Round(Convert.ToDouble(fileSizeBytes[0]) / 1024.0 / 1024.0, 2);
+        }
+
+        public async Task WriteBytesAsync(string path, byte[] file)
+        {
+            await _storage.WriteAsync(path, file);
+        }
+
+        public async Task<byte[]> ReadBytesAsync(string path)
+        {
+            return await _storage.ReadBytesAsync(path);
         }
 
         public void Dispose()
