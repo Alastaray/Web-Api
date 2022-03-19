@@ -1,6 +1,6 @@
 ﻿using AspEndpoint.Models;
 using AspEndpoint.Services;
-using FileManagerProject;
+using FileManagerLibrary;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,32 +10,32 @@ namespace AspEndpoint.Controllers
 
     public class FileController : ControllerBase
     {
-        private readonly FileContext _fileContext;
+        private readonly DataContext _dataContext;
         private readonly IFileManager _fileManager;
-        public FileController(FileContext context, IFileManager fileManager)
+        public FileController(DataContext context, IFileManager fileManager)
         {
-            _fileContext = context;
+            _dataContext = context;
             _fileManager = fileManager;
         }
 
         [HttpPost]
         [Route("api/upload-by-url")]
-        public async Task<IActionResult> Upload([FromBody] UrlModel link)
+        public async Task<IActionResult> Upload([FromBody] RequestUrl link)
         {
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileDownloadService fileDownloadService = new FileDownloadService(_fileContext, _fileManager);
+                FileDownloadService fileDownloadService = new FileDownloadService(_dataContext, _fileManager);
                 string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
-                return Ok(new UrlModel { Url = host + filePath });
+                return Ok(new { Url = host + filePath });
             }
             catch (WebException)
             {
-                return BadRequest(new ErrorMessageModel { Error = "Url is incorrect!" });
+                return BadRequest(new { Error = "Url is incorrect!" });
             }
             catch (Exception er)
             {
-                return BadRequest(new ErrorMessageModel { Error = er.Message });
+                return BadRequest(new { Error = er.Message });
             }
         }
 
@@ -46,13 +46,13 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileGetServise fileGetServise = new FileGetServise(_fileContext);
+                FileGetServise fileGetServise = new FileGetServise(_dataContext);
                 var imageModel = await fileGetServise.GetFileAsync(id);
-                return Ok(new UrlModel { Url = host + imageModel.Path + imageModel.Name });
+                return Ok(new { Url = host + imageModel.Path + imageModel.Name });
             }
             catch (Exception er)
             {
-                return BadRequest(new ErrorMessageModel { Error = er.Message });
+                return BadRequest(new { Error = er.Message });
             }           
         }
 
@@ -62,12 +62,12 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_fileContext, _fileManager);
-                return Ok(new MessageModel { Message = await fileRemoveServise.RemoveImage(id) });
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext, _fileManager);
+                return Ok(new { Message = await fileRemoveServise.RemoveImage(id) });
             }
             catch (Exception er)
             {
-                return BadRequest(new ErrorMessageModel { Error = er.Message });
+                return BadRequest(new { Error = er.Message });
             }
 
         }

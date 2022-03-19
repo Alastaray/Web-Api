@@ -1,6 +1,6 @@
 ﻿using Storage.Net.Blobs;
 
-namespace FileManagerProject
+namespace FileManagerLibrary
 {
     public interface IFileManager : IDisposable
     {

@@ -1,10 +1,10 @@
 global using AspEndpoint.Data;
 global using Microsoft.EntityFrameworkCore;
-using FileManagerProject;
+using FileManagerLibrary;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
-builder.Services.AddDbContext<FileContext>(options =>
+builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection")); 
 });

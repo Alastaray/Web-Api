@@ -1,14 +1,12 @@
 ﻿
-using FileManagerProject;
-using Storage.Net;
-using Storage.Net.Blobs;
+using FileManagerLibrary;
 namespace AspEndpoint.Services
 {
     public class FileService
     {
-        protected readonly FileContext _fileContext;
+        protected readonly DataContext _fileContext;
         protected readonly IFileManager _fileManager;
-        public FileService(FileContext context, IFileManager fileManager)
+        public FileService(DataContext context, IFileManager fileManager)
         {
             _fileContext = context;
             _fileManager = fileManager;

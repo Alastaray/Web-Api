@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileManagerProject\FileManagerProject.csproj" />
+    <ProjectReference Include="..\FileManagerLibrary\FileManagerLibrary.csproj" />
   </ItemGroup>
 
 </Project>

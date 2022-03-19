@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AspEndpoint.Models
 {
-    public class UrlModel
+    public class RequestUrl
     {
         [Required]
         [Url]

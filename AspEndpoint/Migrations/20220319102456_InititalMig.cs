@@ -4,12 +4,12 @@
 
 namespace AspEndpoint.Migrations
 {
-    public partial class CreateInitial : Migration
+    public partial class InititalMig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "files",
+                name: "Files",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -19,14 +19,31 @@ namespace AspEndpoint.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_files", x => x.Id);
+                    table.PrimaryKey("PK_Files", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "files");
+                name: "Files");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using AspEndpoint.Models;
-using FileManagerProject;
+using FileManagerLibrary;
 using Storage.Net.Blobs;
 namespace AspEndpoint.Services
 {
     public class FileRemoveServise : FileService
     {
-        public FileRemoveServise(FileContext context, IFileManager fileManager) : base(context, fileManager) { }
+        public FileRemoveServise(DataContext context, IFileManager fileManager) : base(context, fileManager) { }
 
         public async Task<string> RemoveImage(int id)
         {

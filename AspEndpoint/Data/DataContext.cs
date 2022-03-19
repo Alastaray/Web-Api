@@ -3,13 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspEndpoint.Data
 {
-    public class FileContext : DbContext
+    public class DataContext : DbContext
     {
-        public FileContext(DbContextOptions<FileContext> options)
+        public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
         }
         public DbSet<FileModel> files { get; set; } = null!;
+        public DbSet<UserModel> Users { get; set; } = null!;
     }
 
 }
