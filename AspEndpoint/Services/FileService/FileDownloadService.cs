@@ -25,7 +25,7 @@ namespace AspEndpoint.Services
                 await CutImageAsync(file, 100);
                 await CutImageAsync(file, 300);
             }
-            await _fileContext.files.AddAsync(fileModel);
+            await _fileContext.Files.AddAsync(fileModel);
             await _fileContext.SaveChangesAsync();
             return fileModel.Path + fileModel.Name;
         }

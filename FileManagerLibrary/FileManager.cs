@@ -7,7 +7,6 @@ namespace FileManagerLibrary
     public class FileManager : IFileManager
     {
         IBlobStorage _storage;
-        public string asd = "da";
         public FileManager()
         {
             StorageFactory.Modules.UseGoogleCloudStorage();

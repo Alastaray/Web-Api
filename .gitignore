@@ -4,3 +4,5 @@ AspEndpoint/bin
 AspEndpoint/Files
 FileManagerLibrary/obj
 FileManagerLibrary/bin
+JwtAuthLibrary/obj
+JwtAuthLibrary/bin

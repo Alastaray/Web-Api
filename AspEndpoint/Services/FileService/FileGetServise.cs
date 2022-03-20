@@ -7,7 +7,7 @@ namespace AspEndpoint.Services
         public FileGetServise(DataContext context) : base(context, null) { }
         public async Task<FileModel> GetFileAsync(int id)
         {
-            var image = await _fileContext.files.FindAsync(id);
+            var image = await _fileContext.Files.FindAsync(id);
             if (image == null) throw new Exception("Record doesnot found!");
             return image;
         }

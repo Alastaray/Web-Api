@@ -9,7 +9,7 @@ namespace AspEndpoint.Data
             : base(options)
         {
         }
-        public DbSet<FileModel> files { get; set; } = null!;
+        public DbSet<FileModel> Files { get; set; } = null!;
         public DbSet<UserModel> Users { get; set; } = null!;
     }
 

@@ -1,6 +1,7 @@
 ﻿using AspEndpoint.Models;
 using AspEndpoint.Services;
 using FileManagerLibrary;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -18,9 +19,10 @@ namespace AspEndpoint.Controllers
             _fileManager = fileManager;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/upload-by-url")]
-        public async Task<IActionResult> Upload([FromBody] RequestUrl link)
+        public async Task<IActionResult> Upload([FromBody] UrlRequest link)
         {
             try
             {
@@ -39,6 +41,7 @@ namespace AspEndpoint.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/get-url/:{id}")]
         public async Task<IActionResult> Get(int id)
@@ -56,6 +59,7 @@ namespace AspEndpoint.Controllers
             }           
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/remove/:{id}")]
         public async Task<IActionResult> Remove(int id)

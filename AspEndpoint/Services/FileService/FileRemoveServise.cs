@@ -12,7 +12,7 @@ namespace AspEndpoint.Services
             FileModel fileModel = await new FileGetServise(_fileContext).GetFileAsync(id);
             await _fileManager.RemoveFilesAsync(fileModel.Path);
             await _fileManager.RemoveSubFoldersAsync(fileModel.Path);
-            _fileContext.files.Remove(fileModel);
+            _fileContext.Files.Remove(fileModel);
             await _fileContext.SaveChangesAsync();
             return "Successfully deleting!";
         }       
