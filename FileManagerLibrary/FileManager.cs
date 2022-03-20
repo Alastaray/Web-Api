@@ -2,7 +2,7 @@
 using Storage.Net.Blobs;
 using System.Configuration;
 
-namespace FileManagerProject
+namespace FileManagerLibrary
 {
     public class FileManager : IFileManager
     {

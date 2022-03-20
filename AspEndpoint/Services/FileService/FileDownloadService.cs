@@ -1,6 +1,5 @@
 ﻿using AspEndpoint.Models;
-using FileManagerProject;
-using Storage.Net.Blobs;
+using FileManagerLibrary;
 
 
 namespace AspEndpoint.Services
@@ -8,7 +7,7 @@ namespace AspEndpoint.Services
     public class FileDownloadService : FileService
     {
         public readonly FileModel fileModel;
-        public FileDownloadService(FileContext context, IFileManager fileManager) : base(context, fileManager)
+        public FileDownloadService(DataContext context, IFileManager fileManager) : base(context, fileManager)
         {
             fileModel = new FileModel();
         }
@@ -26,7 +25,7 @@ namespace AspEndpoint.Services
                 await CutImageAsync(file, 100);
                 await CutImageAsync(file, 300);
             }
-            await _fileContext.files.AddAsync(fileModel);
+            await _fileContext.Files.AddAsync(fileModel);
             await _fileContext.SaveChangesAsync();
             return fileModel.Path + fileModel.Name;
         }
