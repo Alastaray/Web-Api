@@ -1,9 +1,5 @@
 ﻿using AspEndpoint.Models;
-using JwtCreaterLibrary;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 
 namespace AspEndpoint.Controllers
@@ -22,15 +18,15 @@ namespace AspEndpoint.Controllers
         {
             var identity = await GetIdentity(user.Login, user.Password);
             if (identity == null)
-                return Unauthorized(new { error = "Invalid username or password." });
+                return Unauthorized(new { error = "Invalid username or password!" });
             
-            return Json(new { access_token = JwtCreater.Create(identity) });
+            return Json(new { access_token = Jwt.Create(identity) });
         }
 
         private async Task<ClaimsIdentity?> GetIdentity(string login, string password)
         {
             var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Login == login && x.Password == password);
-            if (user == null) return null;
+            if (user == null) return null; 
             var claims = new List<Claim>
                 {
                     new Claim("Id", user.Id.ToString()),

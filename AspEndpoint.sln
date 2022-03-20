@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspEndpoint", "AspEndpoint\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileManagerLibrary", "FileManagerLibrary\FileManagerLibrary.csproj", "{753725A1-F76D-4EA2-AF28-9F82C074A117}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JwtAuthLibrary", "JwtAuthLibrary\JwtAuthLibrary.csproj", "{E735D479-49F1-4C60-A894-DF29B00C1827}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{753725A1-F76D-4EA2-AF28-9F82C074A117}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{753725A1-F76D-4EA2-AF28-9F82C074A117}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{753725A1-F76D-4EA2-AF28-9F82C074A117}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E735D479-49F1-4C60-A894-DF29B00C1827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E735D479-49F1-4C60-A894-DF29B00C1827}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E735D479-49F1-4C60-A894-DF29B00C1827}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E735D479-49F1-4C60-A894-DF29B00C1827}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

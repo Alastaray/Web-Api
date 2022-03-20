@@ -14,6 +14,19 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddSingleton<IFileManager, FileManager>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            LifetimeValidator = Jwt.ValidateLifeTime,
+                            ValidateLifetime = true,
+                            ValidateAudience = false,
+                            ValidateIssuer = false,
+                            IssuerSigningKey = Jwt.GetSymmetricSecurityKey(),
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
 
 var app = builder.Build();
 

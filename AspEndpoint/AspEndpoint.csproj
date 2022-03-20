@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileManagerLibrary\FileManagerLibrary.csproj" />
-    <ProjectReference Include="..\JwtAuthLibrary\JwtAuthLibrary.csproj" />
   </ItemGroup>
 
 </Project>
