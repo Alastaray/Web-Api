@@ -1,4 +1,5 @@
-﻿using AspEndpoint.Models;
+﻿using AspEndpoint.Helpers;
+using AspEndpoint.Models;
 using AspEndpoint.Services;
 using FileManagerLibrary;
 using Microsoft.AspNetCore.Authorization;
@@ -29,15 +30,15 @@ namespace AspEndpoint.Controllers
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
                 FileDownloadService fileDownloadService = new FileDownloadService(_dataContext, _fileManager);
                 string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
-                return Ok(new { Url = host + filePath });
+                return this.JsonOk(host + filePath);
             }
             catch (WebException)
             {
-                return BadRequest(new { Error = "Url is incorrect!" });
+                return this.JsonBadRequest("Url is incorrect!");
             }
             catch (Exception er)
             {
-                return BadRequest(new { Error = er.Message });
+                return this.JsonBadRequest(er.Message);
             }
         }
 
@@ -51,11 +52,11 @@ namespace AspEndpoint.Controllers
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
                 FileGetServise fileGetServise = new FileGetServise(_dataContext);
                 var imageModel = await fileGetServise.GetFileAsync(id);
-                return Ok(new { Url = host + imageModel.Path + imageModel.Name });
+                return this.JsonOk(host + imageModel.Path + imageModel.Name);
             }
             catch (Exception er)
             {
-                return BadRequest(new { Error = er.Message });
+                return this.JsonBadRequest(er.Message);
             }           
         }
 
@@ -67,11 +68,11 @@ namespace AspEndpoint.Controllers
             try
             {
                 FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext, _fileManager);
-                return Ok(new { Message = await fileRemoveServise.RemoveImage(id) });
+                return this.JsonOk(await fileRemoveServise.RemoveImage(id));
             }
             catch (Exception er)
             {
-                return BadRequest(new { Error = er.Message });
+                return this.JsonBadRequest(er.Message);
             }
 
         }

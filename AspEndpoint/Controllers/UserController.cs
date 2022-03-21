@@ -1,4 +1,5 @@
-﻿using AspEndpoint.Models;
+﻿using AspEndpoint.Helpers;
+using AspEndpoint.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -18,9 +19,9 @@ namespace AspEndpoint.Controllers
         {
             var identity = await GetIdentity(user.Login, user.Password);
             if (identity == null)
-                return Unauthorized(new { error = "Invalid username or password!" });
-            
-            return Json(new { access_token = Jwt.Create(identity) });
+                return this.JsonUnprocessableEntity("Invalid username or password!");
+
+            return this.JsonOk(Jwt.Create(identity));
         }
 
         private async Task<ClaimsIdentity?> GetIdentity(string login, string password)

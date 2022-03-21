@@ -120,8 +120,25 @@
 				{
 					"name": "Upload-by-url",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEiLCJOYW1lIjoiR2VucnkiLCJTdXJuYW1lIjoiRm9sayIsIm5iZiI6MTY0Nzg4MjY1MCwiZXhwIjoxNjQ3ODgyNzEwfQ.ObDVAFo4RLmP3W5STu93rEvYNtiiySOZSIBjpYo5at4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEiLCJOYW1lIjoiR2VucnkiLCJTdXJuYW1lIjoiRm9sayIsImV4cCI6MTY0Nzc5MjYzN30.iE6TGUsv6djNs5SlsI1yuyIHHMt07ibtJUJAnuFR26M",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"url\":\"https://www.imgonline.com.ua/examples/bee-on-daisy.jpg\"\r\n}",
@@ -156,10 +173,27 @@
 				{
 					"name": "Get-url",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEiLCJOYW1lIjoiR2VucnkiLCJTdXJuYW1lIjoiRm9sayIsIm5iZiI6MTY0Nzg4MjY1MCwiZXhwIjoxNjQ3ODgyNzEwfQ.ObDVAFo4RLmP3W5STu93rEvYNtiiySOZSIBjpYo5at4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibGVsIiwiUGFzc3dvcmQiOiJsb2xvIiwibmJmIjoxNjQ3NzEzMTQzLCJleHAiOjE2NDc3MTMyMDMsImlzcyI6Ik15QXV0aFNlcnZlciIsImF1ZCI6Ik15QXV0aENsaWVudCJ9.efOH4nGO_RIscrvIRVfSwpeNTTqOi6s5zGViw4CZEIM",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"url": {
-							"raw": "https://localhost:44369/api/get-url/:8",
+							"raw": "https://localhost:44369/api/get-url/:4",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -168,7 +202,7 @@
 							"path": [
 								"api",
 								"get-url",
-								":8"
+								":4"
 							],
 							"query": [
 								{
@@ -179,7 +213,7 @@
 							],
 							"variable": [
 								{
-									"key": "8",
+									"key": "4",
 									"value": null
 								}
 							]
@@ -190,10 +224,27 @@
 				{
 					"name": "Remove",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjEiLCJOYW1lIjoiR2VucnkiLCJTdXJuYW1lIjoiRm9sayIsIm5iZiI6MTY0Nzg4MjY1MCwiZXhwIjoxNjQ3ODgyNzEwfQ.ObDVAFo4RLmP3W5STu93rEvYNtiiySOZSIBjpYo5at4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibGVsIiwiUGFzc3dvcmQiOiJsb2xvIiwibmJmIjoxNjQ3NzEzMTQzLCJleHAiOjE2NDc3MTMyMDMsImlzcyI6Ik15QXV0aFNlcnZlciIsImF1ZCI6Ik15QXV0aENsaWVudCJ9.efOH4nGO_RIscrvIRVfSwpeNTTqOi6s5zGViw4CZEIM",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"url": {
-							"raw": "https://localhost:44369/api/remove/:7",
+							"raw": "https://localhost:44369/api/remove/:4",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -202,13 +253,42 @@
 							"path": [
 								"api",
 								"remove",
-								":7"
+								":4"
 							],
 							"variable": [
 								{
-									"key": "7",
+									"key": "4",
 									"value": null
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Authorization",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\":\"genfolk\",\r\n    \"password\":\"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44369/api/authorization",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44369",
+							"path": [
+								"api",
+								"authorization"
 							]
 						}
 					},
