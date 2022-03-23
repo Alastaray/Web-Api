@@ -7,10 +7,12 @@ namespace AspEndpoint.Services
     public class FileDownloadService : FileService
     {
         public readonly FileModel fileModel;
-        public FileDownloadService(DataContext context, IFileManager fileManager) : base(context, fileManager)
+        private readonly IFileManager _fileManager;
+        public FileDownloadService(DataContext context, IFileManager fileManager) : base(context)
         {
             fileModel = new FileModel();
-        }
+            _fileManager = fileManager;
+    }
 
         public async Task<string> FileDownloadAsync(string url)
         {
@@ -25,8 +27,8 @@ namespace AspEndpoint.Services
                 await CutImageAsync(file, 100);
                 await CutImageAsync(file, 300);
             }
-            await _fileContext.Files.AddAsync(fileModel);
-            await _fileContext.SaveChangesAsync();
+            await _dataContext.Files.AddAsync(fileModel);
+            await _dataContext.SaveChangesAsync();
             return fileModel.Path + fileModel.Name;
         }
 

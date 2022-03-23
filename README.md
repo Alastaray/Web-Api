@@ -6,6 +6,8 @@
 ##### All requests ease are sent by Postman.
 
 #### What request you can send, but firstly you need authorization:
--	##### api/upload-by-url request body: {“url”: FILE_URL}
+-	##### api/authorization request body: {"login": genfolk, "password": 1234}
+-	##### api/upload-by-url request body: {"url": FILE_URL}
 -	##### api/get-url/:id
 -	##### api/remove/:id
+-	##### api/restore/:id

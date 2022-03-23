@@ -50,9 +50,8 @@ namespace AspEndpoint.Controllers
             try
             {
                 string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileGetServise fileGetServise = new FileGetServise(_dataContext);
-                var imageModel = await fileGetServise.GetFileAsync(id);
-                return this.JsonOk(host + imageModel.Path + imageModel.Name);
+                var fileModel = await _dataContext.Files.FindNotDeletedAsync(id);
+                return this.JsonOk(host + fileModel.Path + fileModel.Name);
             }
             catch (Exception er)
             {
@@ -67,17 +66,31 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext, _fileManager);
-                return this.JsonOk(await fileRemoveServise.RemoveImage(id));
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext);
+                return this.JsonOk(await fileRemoveServise.Remove(id));
             }
             catch (Exception er)
             {
                 return this.JsonBadRequest(er.Message);
             }
-
         }
 
-        
-       
+        [Authorize]
+        [HttpGet]
+        [Route("api/restore/:{id}")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            try
+            {
+                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext);
+                return this.JsonOk(await fileRemoveServise.Restore(id));
+            }
+            catch (Exception er)
+            {
+                return this.JsonBadRequest(er.Message);
+            }
+        }
+
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using AspEndpoint.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace AspEndpoint.Data
 {
@@ -11,6 +10,7 @@ namespace AspEndpoint.Data
         }
         public DbSet<FileModel> Files { get; set; } = null!;
         public DbSet<UserModel> Users { get; set; } = null!;
+      
     }
 
 }

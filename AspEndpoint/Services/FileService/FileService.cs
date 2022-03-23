@@ -4,12 +4,10 @@ namespace AspEndpoint.Services
 {
     public class FileService
     {
-        protected readonly DataContext _fileContext;
-        protected readonly IFileManager _fileManager;
-        public FileService(DataContext context, IFileManager fileManager)
+        protected readonly DataContext _dataContext;
+        public FileService(DataContext context)
         {
-            _fileContext = context;
-            _fileManager = fileManager;
+            _dataContext = context;
         }
     }
 }
