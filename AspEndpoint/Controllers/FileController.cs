@@ -1,10 +1,8 @@
-﻿using AspEndpoint.Helpers;
-using AspEndpoint.Models;
+﻿using AspEndpoint.Models;
 using AspEndpoint.Services;
 using FileManagerLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace AspEndpoint.Controllers
 {
@@ -32,9 +30,9 @@ namespace AspEndpoint.Controllers
                 string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
                 return this.JsonOk(host + filePath);
             }
-            catch (WebException)
+            catch (ControllerExpection er)
             {
-                return this.JsonBadRequest("Url is incorrect!");
+                return this.CreateJson(er.Message, er.StatusCode);
             }
             catch (Exception er)
             {
@@ -53,10 +51,14 @@ namespace AspEndpoint.Controllers
                 var fileModel = await _dataContext.Files.FindNotDeletedAsync(id);
                 return this.JsonOk(host + fileModel.Path + fileModel.Name);
             }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
+            }
             catch (Exception er)
             {
                 return this.JsonBadRequest(er.Message);
-            }           
+            }
         }
 
         [Authorize]
@@ -68,6 +70,10 @@ namespace AspEndpoint.Controllers
             {
                 FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext);
                 return this.JsonOk(await fileRemoveServise.Remove(id));
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
             }
             catch (Exception er)
             {
@@ -84,6 +90,10 @@ namespace AspEndpoint.Controllers
             {
                 FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext);
                 return this.JsonOk(await fileRemoveServise.Restore(id));
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
             }
             catch (Exception er)
             {

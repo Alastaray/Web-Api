@@ -1,4 +1,5 @@
-﻿using AspEndpoint.Models;
+﻿using AspEndpoint.Controllers;
+using AspEndpoint.Models;
 
 namespace AspEndpoint.Data
 {
@@ -46,7 +47,7 @@ namespace AspEndpoint.Data
         }
         private static async ValueTask<TEntity> FindAsync<TEntity>(DbSet<TEntity> dbset, int id) where TEntity : class, IDeletedAt
         {
-            return await dbset.FindAsync(id) ?? throw new Exception("Record was not found!");
+            return await dbset.FindAsync(id) ?? throw new ControllerExpection("Record was not found!", ResponseStatusCode.NotFound);
         }
     }
 }
