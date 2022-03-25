@@ -1,10 +1,7 @@
-﻿using AspEndpoint.Helpers;
-using AspEndpoint.Models;
-using AspEndpoint.Services;
-using FileManagerLibrary;
+﻿using AspEndpoint.Models;
+using AspEndpoint.Services.FileService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace AspEndpoint.Controllers
 {
@@ -12,12 +9,10 @@ namespace AspEndpoint.Controllers
 
     public class FileController : ControllerBase
     {
-        private readonly DataContext _dataContext;
-        private readonly IFileManager _fileManager;
-        public FileController(DataContext context, IFileManager fileManager)
+        private readonly IFileService _fileService;
+        public FileController(IFileService fileService)
         {
-            _dataContext = context;
-            _fileManager = fileManager;
+            _fileService = fileService;
         }
 
         [Authorize]
@@ -26,15 +21,13 @@ namespace AspEndpoint.Controllers
         public async Task<IActionResult> Upload([FromBody] UrlRequest link)
         {
             try
-            {
-                string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileDownloadService fileDownloadService = new FileDownloadService(_dataContext, _fileManager);
-                string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
-                return this.JsonOk(host + filePath);
+            {              
+                string filePath = await _fileService.FileDownloadAsync(link.Url);
+                return this.JsonOk(GetHost() + filePath);
             }
-            catch (WebException)
+            catch (ControllerExpection er)
             {
-                return this.JsonBadRequest("Url is incorrect!");
+                return this.CreateJson(er.Message, er.StatusCode);
             }
             catch (Exception er)
             {
@@ -49,15 +42,17 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileGetServise fileGetServise = new FileGetServise(_dataContext);
-                var imageModel = await fileGetServise.GetFileAsync(id);
-                return this.JsonOk(host + imageModel.Path + imageModel.Name);
+                var fileModel = await _fileService.GetAsync(id);
+                return this.JsonOk(GetHost() + fileModel.Path + fileModel.Name);
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
             }
             catch (Exception er)
             {
                 return this.JsonBadRequest(er.Message);
-            }           
+            }
         }
 
         [Authorize]
@@ -67,17 +62,41 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext, _fileManager);
-                return this.JsonOk(await fileRemoveServise.RemoveImage(id));
+                return this.JsonOk(await _fileService.Remove(id));
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
             }
             catch (Exception er)
             {
                 return this.JsonBadRequest(er.Message);
             }
-
         }
 
-        
-       
+        [Authorize]
+        [HttpGet]
+        [Route("api/restore/:{id}")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            try
+            {
+                return this.JsonOk(await _fileService.Restore(id));
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
+            }
+            catch (Exception er)
+            {
+                return this.JsonBadRequest(er.Message);
+            }
+        }
+
+        private string GetHost()
+        {
+            return HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
+        }
+
     }
 }

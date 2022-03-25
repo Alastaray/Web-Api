@@ -17,13 +17,20 @@ namespace FileManagerLibrary
             string? configParam = ConfigurationManager.AppSettings["MaxFileSize"]?.Replace('.', ',');
             double maxFileSize = double.Parse(configParam ?? "5");
             if (await GetFileSizeAsync(url) > maxFileSize)
-                throw new Exception("File has size than more " + maxFileSize + "MB!");
-            HttpClient httpClient = new HttpClient();
-            byte[] file = await httpClient.GetByteArrayAsync(url);
-            string name = Hasher.CreateHashName(url);
-            string path = Hasher.CreateHashPath(name);
-            await _storage.WriteAsync(path + name, file);
-            return path + name;
+                throw new Exception("File has size than more " + maxFileSize + "MB!");          
+            try
+            {
+                HttpClient httpClient = new HttpClient();
+                byte[] file = await httpClient.GetByteArrayAsync(url);
+                string name = Hasher.CreateHashName(url);
+                string path = Hasher.CreateHashPath(name);
+                await _storage.WriteAsync(path + name, file);
+                return path + name;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Url is incorrect!");
+            }           
         }
 
         public async Task RemoveFolderAsync(string path)

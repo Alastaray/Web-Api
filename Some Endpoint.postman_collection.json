@@ -171,6 +171,35 @@
 					"response": []
 				},
 				{
+					"name": "Authorization",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\":\"genfolk\",\r\n    \"password\":\"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44369/api/authorization",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44369",
+							"path": [
+								"api",
+								"authorization"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get-url",
 					"request": {
 						"auth": {
@@ -193,7 +222,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://localhost:44369/api/get-url/:4",
+							"raw": "https://localhost:44369/api/get-url/:25",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -202,7 +231,7 @@
 							"path": [
 								"api",
 								"get-url",
-								":4"
+								":25"
 							],
 							"query": [
 								{
@@ -213,7 +242,7 @@
 							],
 							"variable": [
 								{
-									"key": "4",
+									"key": "25",
 									"value": null
 								}
 							]
@@ -244,7 +273,7 @@
 							}
 						],
 						"url": {
-							"raw": "https://localhost:44369/api/remove/:4",
+							"raw": "https://localhost:44369/api/remove/:5",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -253,11 +282,11 @@
 							"path": [
 								"api",
 								"remove",
-								":4"
+								":5"
 							],
 							"variable": [
 								{
-									"key": "4",
+									"key": "5",
 									"value": null
 								}
 							]
@@ -266,21 +295,12 @@
 					"response": []
 				},
 				{
-					"name": "Authorization",
+					"name": "Restore",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"login\":\"genfolk\",\r\n    \"password\":\"1234\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "https://localhost:44369/api/authorization",
+							"raw": "https://localhost:44369/api/restore/:5",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -288,7 +308,14 @@
 							"port": "44369",
 							"path": [
 								"api",
-								"authorization"
+								"restore",
+								":5"
+							],
+							"variable": [
+								{
+									"key": "5",
+									"value": null
+								}
 							]
 						}
 					},
