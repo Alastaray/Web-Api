@@ -1,7 +1,6 @@
 ﻿using Storage.Net;
 using Storage.Net.Blobs;
 using System.Configuration;
-using System.Net;
 
 namespace FileManagerLibrary
 {

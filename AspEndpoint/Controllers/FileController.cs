@@ -1,6 +1,5 @@
 ﻿using AspEndpoint.Models;
-using AspEndpoint.Services;
-using FileManagerLibrary;
+using AspEndpoint.Services.FileService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,12 +9,10 @@ namespace AspEndpoint.Controllers
 
     public class FileController : ControllerBase
     {
-        private readonly DataContext _dataContext;
-        private readonly IFileManager _fileManager;
-        public FileController(DataContext context, IFileManager fileManager)
+        private readonly IFileService _fileService;
+        public FileController(IFileService fileService)
         {
-            _dataContext = context;
-            _fileManager = fileManager;
+            _fileService = fileService;
         }
 
         [Authorize]
@@ -24,11 +21,9 @@ namespace AspEndpoint.Controllers
         public async Task<IActionResult> Upload([FromBody] UrlRequest link)
         {
             try
-            {
-                string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                FileDownloadService fileDownloadService = new FileDownloadService(_dataContext, _fileManager);
-                string filePath = await fileDownloadService.FileDownloadAsync(link.Url);
-                return this.JsonOk(host + filePath);
+            {              
+                string filePath = await _fileService.FileDownloadAsync(link.Url);
+                return this.JsonOk(GetHost() + filePath);
             }
             catch (ControllerExpection er)
             {
@@ -47,9 +42,8 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                string host = HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
-                var fileModel = await _dataContext.Files.FindNotDeletedAsync(id);
-                return this.JsonOk(host + fileModel.Path + fileModel.Name);
+                var fileModel = await _fileService.GetAsync(id);
+                return this.JsonOk(GetHost() + fileModel.Path + fileModel.Name);
             }
             catch (ControllerExpection er)
             {
@@ -68,8 +62,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext);
-                return this.JsonOk(await fileRemoveServise.Remove(id));
+                return this.JsonOk(await _fileService.Remove(id));
             }
             catch (ControllerExpection er)
             {
@@ -88,8 +81,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                FileRemoveServise fileRemoveServise = new FileRemoveServise(_dataContext);
-                return this.JsonOk(await fileRemoveServise.Restore(id));
+                return this.JsonOk(await _fileService.Restore(id));
             }
             catch (ControllerExpection er)
             {
@@ -101,6 +93,10 @@ namespace AspEndpoint.Controllers
             }
         }
 
+        private string GetHost()
+        {
+            return HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + "/";
+        }
 
     }
 }
