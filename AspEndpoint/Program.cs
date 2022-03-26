@@ -2,6 +2,7 @@ global using AspEndpoint.Data;
 global using Microsoft.EntityFrameworkCore;
 using AspEndpoint;
 using AspEndpoint.Services.FileService;
+using AspEndpoint.Services.UserService;
 using FileManagerLibrary;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 builder.Services.AddSingleton<IFileManager, FileManager>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
