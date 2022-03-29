@@ -1,4 +1,4 @@
-﻿using AspEndpoint.Controllers;
+﻿using AspEndpoint.Helpers;
 using AspEndpoint.Models;
 
 namespace AspEndpoint.Data

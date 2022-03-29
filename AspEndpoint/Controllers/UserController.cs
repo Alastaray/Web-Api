@@ -1,39 +1,52 @@
-﻿using AspEndpoint.Models;
+﻿using AspEndpoint.Helpers;
+using AspEndpoint.Requests;
+using AspEndpoint.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace AspEndpoint.Controllers
 {
     public class UserController : Controller
     {
-        private readonly DataContext _dataContext;
-        public UserController(DataContext context)
+        IUserService _userService;
+        public UserController(IUserService userService)
         {
-            _dataContext = context;
+            _userService = userService;
         }
 
         [HttpPost]
         [Route("api/authorization")]
-        public async Task<IActionResult> Authorization([FromBody] UserRequest user)
+        public async Task<IActionResult> Authorizate([FromBody] AuthorizationRequest requestUser)
         {
-            var identity = await GetIdentity(user.Login, user.Password);
-            if (identity == null)
-                return this.JsonUnprocessableEntity("Invalid username or password!");
-
-            return this.JsonOk(Jwt.Create(identity));
+            try
+            {
+                return this.JsonOk(await _userService.Authorizate(requestUser, HttpContext));
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
+            }
+            catch (Exception er)
+            {
+                return this.JsonBadRequest(er.Message);
+            }           
         }
 
-        private async Task<ClaimsIdentity?> GetIdentity(string login, string password)
+        [HttpPost]
+        [Route("api/registration")]
+        public async Task<IActionResult> Registrate([FromBody] RegistrationRequest requestUser)
         {
-            var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Login == login && x.Password == password);
-            if (user == null) return null; 
-            var claims = new List<Claim>
-                {
-                    new Claim("Id", user.Id.ToString()),
-                    new Claim("Name", user.Name),
-                    new Claim("Surname", user.Surname)
-                };
-            return new ClaimsIdentity(claims);
+            try
+            {
+                return this.JsonOk(await _userService.Registrate(requestUser, HttpContext));
+            }
+            catch (ControllerExpection er)
+            {
+                return this.CreateJson(er.Message, er.StatusCode);
+            }
+            catch (Exception er)
+            {
+                return this.JsonBadRequest(er.Message);
+            }
         }
     }
 }

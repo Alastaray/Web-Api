@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace FileManagerLibrary
@@ -25,10 +26,23 @@ namespace FileManagerLibrary
             return hashName + extension;
         }
 
-        public static string CreateHashStr(string input)
+        public static string CreateRandomHashStr()
         {
-            input += new Random().Next();
-            input += DateTime.Now;
+            string letters = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+            const int randowWordSize = 32;
+            StringBuilder randomWord = new StringBuilder();
+            Random random = new Random();
+            for (int i = 0; i < randowWordSize; i++)
+            {
+                randomWord.Append(letters[random.Next(letters.Length)]);
+            }
+            return CreateHashStr(randomWord.ToString());
+        }
+
+        public static string CreateHashStr(string input, int? number = null, DateTime? time = null)
+        {
+            input += number ?? new Random().Next();
+            input += time ?? DateTime.UtcNow;
             using MD5 md5 = MD5.Create();
             byte[] inputBytes = Encoding.ASCII.GetBytes(input);
             byte[] hashBytes = md5.ComputeHash(inputBytes);

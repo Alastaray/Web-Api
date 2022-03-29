@@ -1,8 +1,6 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
 
-using System.ComponentModel.DataAnnotations;
-
-namespace AspEndpoint.Models
+namespace AspEndpoint.Requests
 {
     public class UrlRequest
     {
