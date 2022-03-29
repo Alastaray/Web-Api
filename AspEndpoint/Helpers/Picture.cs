@@ -1,7 +1,7 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
-namespace AspEndpoint
+namespace AspEndpoint.Helpers
 {
     public static class Picture
     {

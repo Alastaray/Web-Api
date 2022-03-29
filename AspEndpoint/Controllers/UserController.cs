@@ -1,4 +1,5 @@
-﻿using AspEndpoint.Requests;
+﻿using AspEndpoint.Helpers;
+using AspEndpoint.Requests;
 using AspEndpoint.Services.UserService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                return this.JsonOk(await _userService.Authorizate(requestUser));
+                return this.JsonOk(await _userService.Authorizate(requestUser, HttpContext));
             }
             catch (ControllerExpection er)
             {
@@ -36,7 +37,7 @@ namespace AspEndpoint.Controllers
         {
             try
             {
-                return this.JsonOk(await _userService.Registrate(requestUser));
+                return this.JsonOk(await _userService.Registrate(requestUser, HttpContext));
             }
             catch (ControllerExpection er)
             {

@@ -26,6 +26,19 @@ namespace FileManagerLibrary
             return hashName + extension;
         }
 
+        public static string CreateRandomHashStr()
+        {
+            string letters = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+            const int randowWordSize = 32;
+            StringBuilder randomWord = new StringBuilder();
+            Random random = new Random();
+            for (int i = 0; i < randowWordSize; i++)
+            {
+                randomWord.Append(letters[random.Next(letters.Length)]);
+            }
+            return CreateHashStr(randomWord.ToString());
+        }
+
         public static string CreateHashStr(string input, int? number = null, DateTime? time = null)
         {
             input += number ?? new Random().Next();

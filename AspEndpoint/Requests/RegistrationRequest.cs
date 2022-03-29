@@ -6,15 +6,15 @@ namespace AspEndpoint.Requests
     {
         [Required]
         [MaxLength(30)]
-        public string? Name { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         [Required]
         [MaxLength(30)]
-        public string? Surname { get; set; } = string.Empty;
+        public string Surname { get; set; } = string.Empty;
         [Required]
         [MaxLength(30)]
-        public string? Login { get; set; } = string.Empty;
+        public string Login { get; set; } = string.Empty;
         [Required]
         [MaxLength(30)]
-        public string? Password { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

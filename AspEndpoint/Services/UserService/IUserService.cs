@@ -6,9 +6,10 @@ namespace AspEndpoint.Services.UserService
 {
     public interface IUserService
     {
-        public Task<string> Authorizate(AuthorizationRequest requestUser);
-        public Task<string> Registrate(RegistrationRequest requestUser);
-        public Task<ClaimsIdentity?> GetIdentity(string login, string password);
-        public Task<UserModel> CreateUser(RegistrationRequest requestUser);
+        public Task<string> Authorizate(AuthorizationRequest requestUser, HttpContext httpContext);
+        public Task<string> Registrate(RegistrationRequest requestUser, HttpContext httpContext);
+        public Task<bool> IsUser(UserModel? user, string password);
+        public UserModel CreateUser(RegistrationRequest requestUser);
+        public Task<bool> IsUserAuthorized(string? refreshToken); 
     }
 }

@@ -3,16 +3,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace AspEndpoint
+namespace AspEndpoint.Helpers
 {
     public static class Jwt
     {
+        private static string JwtKey = System.Configuration.ConfigurationManager.AppSettings["JwtKey"] ?? "qwertyuiopasdfghjklzxcvbnm";
+        private static int JwtLifeTime = int.Parse(System.Configuration.ConfigurationManager.AppSettings["JwtLifeTime"] ?? "60");
         public static string Create(ClaimsIdentity identity)
         {
             var jwt = new JwtSecurityToken(
                     claims: identity.Claims,  
                     notBefore: DateTime.UtcNow,
-                    expires: DateTime.UtcNow.AddSeconds(GetLifeTime()),
+                    expires: DateTime.UtcNow.AddSeconds(JwtLifeTime),
                     signingCredentials: new SigningCredentials(GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
@@ -26,12 +28,7 @@ namespace AspEndpoint
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
-            string? key = System.Configuration.ConfigurationManager.AppSettings["JwtKey"];
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key ?? "qwertyuiopasdfghjklzxcvbnm"));
-        }
-        public static int GetLifeTime()
-        {
-            return int.Parse(System.Configuration.ConfigurationManager.AppSettings["JwtLifeTime"] ?? "60");
+            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtKey));
         }
     }
 }

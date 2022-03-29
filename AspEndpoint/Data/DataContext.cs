@@ -10,7 +10,8 @@ namespace AspEndpoint.Data
         }
         public DbSet<FileModel> Files { get; set; } = null!;
         public DbSet<UserModel> Users { get; set; } = null!;
-      
+        public DbSet<RefreshSessionModel> RefreshSessions { get; set; } = null!;
+
     }
 
 }
